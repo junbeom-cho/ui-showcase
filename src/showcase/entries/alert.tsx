@@ -1,4 +1,7 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useState } from 'react'
+import { AlertTriangleIcon, CheckCircle2Icon, InfoIcon, XIcon } from 'lucide-react'
+import { Alert, AlertAction, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import type { ShowcaseEntry } from '../types'
 
 function AlertPreview() {
@@ -10,10 +13,112 @@ function AlertPreview() {
   )
 }
 
+function AlertSpecimen() {
+  return (
+    <Alert className="w-full max-w-96">
+      <InfoIcon data-slot="alert-icon" />
+      <AlertTitle>새 버전이 나왔습니다</AlertTitle>
+      <AlertDescription>새로고침하면 바뀐 기능을 바로 쓸 수 있습니다.</AlertDescription>
+      <AlertAction>
+        <Button size="xs" variant="outline">새로고침</Button>
+      </AlertAction>
+    </Alert>
+  )
+}
+
+function DefaultAndDestructive() {
+  return (
+    <div className="flex w-full max-w-96 flex-col gap-3">
+      <Alert>
+        <InfoIcon />
+        <AlertTitle>점검 안내</AlertTitle>
+        <AlertDescription>오늘 밤 2시부터 30분 동안 서비스를 점검합니다.</AlertDescription>
+      </Alert>
+      <Alert variant="destructive">
+        <AlertTriangleIcon />
+        <AlertTitle>결제하지 못했습니다</AlertTitle>
+        <AlertDescription>카드 유효기간이 지났습니다. 결제 수단을 바꾼 뒤 다시 시도하세요.</AlertDescription>
+      </Alert>
+    </div>
+  )
+}
+
+function Dismissible() {
+  const [open, setOpen] = useState(true)
+  return (
+    <div className="flex w-full max-w-96 flex-col items-center gap-3">
+      {open ? (
+        <Alert>
+          <CheckCircle2Icon />
+          <AlertTitle>프로필을 저장했습니다</AlertTitle>
+          <AlertDescription>다른 사람에게는 1분 안에 반영됩니다.</AlertDescription>
+          <AlertAction>
+            <Button size="icon" variant="ghost" className="size-6" aria-label="알림 닫기" onClick={() => setOpen(false)}>
+              <XIcon />
+            </Button>
+          </AlertAction>
+        </Alert>
+      ) : (
+        <Button size="sm" variant="outline" onClick={() => setOpen(true)}>
+          알림 다시 보기
+        </Button>
+      )}
+    </div>
+  )
+}
+
+const tones = [
+  { icon: InfoIcon, title: '정보', body: '새 기능을 써 보세요.', className: 'border-blue-200 bg-blue-50 text-blue-900 *:data-[slot=alert-description]:text-blue-800' },
+  { icon: CheckCircle2Icon, title: '성공', body: '파일 3개를 올렸습니다.', className: 'border-emerald-200 bg-emerald-50 text-emerald-900 *:data-[slot=alert-description]:text-emerald-800' },
+  { icon: AlertTriangleIcon, title: '주의', body: '저장 공간이 10% 남았습니다.', className: 'border-amber-200 bg-amber-50 text-amber-900 *:data-[slot=alert-description]:text-amber-800' },
+]
+
+function Tones() {
+  return (
+    <div className="flex w-full max-w-96 flex-col gap-3">
+      {tones.map((tone) => (
+        <Alert key={tone.title} className={tone.className}>
+          <tone.icon />
+          <AlertTitle>{tone.title}</AlertTitle>
+          <AlertDescription>{tone.body}</AlertDescription>
+        </Alert>
+      ))}
+    </div>
+  )
+}
+
 export const alertEntry: ShowcaseEntry = {
   id: 'alert',
   name: 'Alert',
   aliases: ['Callout', 'Banner', 'Notice', '알림'],
   description: '주의가 필요한 메시지를 페이지 안에서 눈에 띄게 보여주는 상자.',
+  category: 'feedback',
   Preview: AlertPreview,
+  anatomy: {
+    Specimen: AlertSpecimen,
+    parts: [
+      { slot: 'alert', name: 'Alert', description: '메시지를 감싸는 상자' },
+      { slot: 'alert-icon', name: 'icon', description: '메시지 종류를 알려주는 아이콘' },
+      { slot: 'alert-title', name: 'AlertTitle', description: '한 줄 요약' },
+      { slot: 'alert-description', name: 'AlertDescription', description: '자세한 설명과 해야 할 일' },
+      { slot: 'alert-action', name: 'AlertAction', description: '오른쪽 위의 버튼 자리' },
+    ],
+  },
+  examples: [
+    {
+      title: '기본과 위험',
+      description: '일반 안내는 default, 오류처럼 꼭 봐야 하는 메시지는 destructive로 씁니다.',
+      Demo: DefaultAndDestructive,
+    },
+    {
+      title: '닫을 수 있는 알림',
+      description: '읽고 나면 닫을 수 있게 X 버튼을 둡니다. 닫은 뒤 다시 열어 보세요.',
+      Demo: Dismissible,
+    },
+    {
+      title: '종류별 색',
+      description: '정보·성공·주의처럼 성격에 따라 색을 입혀 한눈에 구분되게 합니다.',
+      Demo: Tones,
+    },
+  ],
 }
