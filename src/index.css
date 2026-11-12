@@ -159,7 +159,7 @@
 
 /* Drafting paper: 16px minor grid with a heavier line every 5 squares. */
 @utility bg-graph {
-  background-color: white;
+  background-color: var(--card);
   background-image:
     linear-gradient(var(--rule) 1px, transparent 1px),
     linear-gradient(90deg, var(--rule) 1px, transparent 1px),

@@ -43,7 +43,7 @@ it.each(designStyles.map((s) => [s.id, s] as const))('%s has 3–4 traits pointi
 it('renders the same text in every style', () => {
   const texts = designStyles.map((s) => render(<DemoApp styleId={s.id} />).container.textContent)
   expect(new Set(texts).size).toBe(1)
-  for (const copy of ['김하늘', '프로', '알림 받기', '자동 백업', '저장 공간', '70%', '저장', '취소']) {
+  for (const copy of ['김하늘', '새 프로젝트', '최근 프로젝트', '알림 받기', '자동 백업', '저장 공간', '70%', '저장', '취소']) {
     expect(texts[0]).toContain(copy)
   }
 })

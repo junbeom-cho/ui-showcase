@@ -1,107 +1,176 @@
 /* Glassmorphism: frosted, translucent white panes with a thin bright edge over vivid colour. */
 
-[data-design-style="glassmorphism"][data-slot="demo-backdrop"] {
-  background:
-    radial-gradient(circle at 18% 22%, #ff4ecd 0 14%, transparent 34%),
-    radial-gradient(circle at 85% 28%, #38bdf8 0 16%, transparent 38%),
-    radial-gradient(circle at 45% 88%, #fbbf24 0 14%, transparent 36%),
-    linear-gradient(135deg, #7c3aed, #db2777);
-}
+@scope ([data-design-style="glassmorphism"]) to ([data-design-style]) {
+  /* colour tokens: theme the whole app on <html>, and reset them on a nested demo */
+  :scope {
+    --paper: rgb(255 255 255 / 0.12);
+    --ink: #ffffff;
+    --ink-muted: rgb(255 255 255 / 0.82);
+    --rule: rgb(255 255 255 / 0.3);
+    --gridline: rgb(255 255 255 / 0.12);
+    --blueprint: #1e1b4b;
+    --blueprint-soft: rgb(255 255 255 / 0.22);
+    --background: #5b21b6;
+    --foreground: #ffffff;
+    --card: rgb(255 255 255 / 0.16);
+    --card-foreground: #ffffff;
+    --popover: #f5f3ff;
+    --popover-foreground: #2e1065;
+    --primary: #ffffff;
+    --primary-foreground: #4c1d95;
+    --secondary: rgb(255 255 255 / 0.2);
+    --secondary-foreground: #ffffff;
+    --muted: rgb(255 255 255 / 0.15);
+    --muted-foreground: rgb(255 255 255 / 0.82);
+    --accent: rgb(255 255 255 / 0.25);
+    --accent-foreground: #ffffff;
+    --border: rgb(255 255 255 / 0.35);
+    --input: rgb(255 255 255 / 0.4);
+    --ring: #ffffff;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="card"] {
-  background: rgb(255 255 255 / 0.16);
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / 0.4);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgb(31 38 135 / 0.3);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  text-shadow: 0 1px 2px rgb(60 0 90 / 0.35);
-}
+  :scope:root body {
+    background: radial-gradient(circle at 15% 20%, #ff4ecd 0 10%, transparent 30%) fixed, radial-gradient(circle at 85% 25%, #38bdf8 0 12%, transparent 34%) fixed, radial-gradient(circle at 50% 90%, #fbbf24 0 10%, transparent 32%) fixed, linear-gradient(135deg, #7c3aed, #db2777) fixed;
+  }
 
-[data-design-style="glassmorphism"] [data-slot^="demo-icon"] {
-  color: #ffffff;
-}
+  :scope[data-slot="demo-backdrop"] {
+    background:
+      radial-gradient(circle at 18% 22%, #ff4ecd 0 14%, transparent 34%),
+      radial-gradient(circle at 85% 28%, #38bdf8 0 16%, transparent 38%),
+      radial-gradient(circle at 45% 88%, #fbbf24 0 14%, transparent 36%),
+      linear-gradient(135deg, #7c3aed, #db2777);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="avatar-fallback"] {
-  background: rgb(255 255 255 / 0.3);
-  color: #ffffff;
-}
+  [data-slot="card"],
+  [data-slot="demo-topbar"],
+  [data-slot="demo-sidebar"],
+  [data-slot="app-surface"] {
+    background: rgb(255 255 255 / 0.16);
+    color: #ffffff;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgb(31 38 135 / 0.3);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    text-shadow: 0 1px 2px rgb(60 0 90 / 0.35);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="badge"] {
-  background: rgb(255 255 255 / 0.25);
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / 0.45);
-}
 
-[data-design-style="glassmorphism"] [data-slot="input"] {
-  height: 38px;
-  background: rgb(255 255 255 / 0.2);
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / 0.4);
-  border-radius: 12px;
-  box-shadow: none;
-}
+  [data-slot="avatar-fallback"] {
+    background: rgb(255 255 255 / 0.3);
+    color: #ffffff;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="input"]::placeholder {
-  color: rgb(255 255 255 / 0.8);
-}
+  [data-slot="badge"] {
+    background: rgb(255 255 255 / 0.25);
+    color: #ffffff;
+    border: 1px solid rgb(255 255 255 / 0.45);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="button"] {
-  height: 40px;
-  color: #ffffff;
-  border: 1px solid rgb(255 255 255 / 0.55);
-  border-radius: 12px;
-  font-weight: 600;
-  box-shadow: none;
-  text-shadow: 0 1px 2px rgb(60 0 90 / 0.35);
-}
+  [data-slot="input"] {
+    height: 38px;
+    background: rgb(255 255 255 / 0.2);
+    color: #ffffff;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: 12px;
+    box-shadow: none;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="button"][data-variant="default"] {
-  background: rgb(255 255 255 / 0.32);
-}
+  [data-slot="input"]::placeholder {
+    color: rgb(255 255 255 / 0.8);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="button"][data-variant="outline"] {
-  background: rgb(255 255 255 / 0.1);
-}
+  [data-slot="button"] {
+    height: 40px;
+    color: #ffffff;
+    border: 1px solid rgb(255 255 255 / 0.55);
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: none;
+    text-shadow: 0 1px 2px rgb(60 0 90 / 0.35);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="button"]:hover {
-  background: rgb(255 255 255 / 0.4);
-}
+  [data-slot="button"][data-variant="default"] {
+    background: rgb(255 255 255 / 0.32);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="switch"] {
-  border: 1px solid rgb(255 255 255 / 0.5);
-  box-shadow: none;
-}
+  [data-slot="button"][data-variant="outline"] {
+    background: rgb(255 255 255 / 0.1);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="switch"][data-state="unchecked"] {
-  background: rgb(255 255 255 / 0.2);
-}
+  [data-slot="button"]:hover {
+    background: rgb(255 255 255 / 0.4);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="switch"][data-state="checked"] {
-  background: rgb(255 255 255 / 0.6);
-}
+  [data-slot="switch"] {
+    border: 1px solid rgb(255 255 255 / 0.5);
+    box-shadow: none;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="switch-thumb"] {
-  background: #ffffff;
-}
+  [data-slot="switch"][data-state="unchecked"] {
+    background: rgb(255 255 255 / 0.2);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="switch"][data-state="checked"] [data-slot="switch-thumb"] {
-  background: #7c3aed;
-}
+  [data-slot="switch"][data-state="checked"] {
+    background: rgb(255 255 255 / 0.6);
+  }
 
-[data-design-style="glassmorphism"] [data-slot="progress"] {
-  height: 6px;
-  background: rgb(255 255 255 / 0.25);
-}
+  [data-slot="switch-thumb"] {
+    background: #ffffff;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="progress-indicator"] {
-  background: #ffffff;
-}
+  [data-slot="switch"][data-state="checked"] [data-slot="switch-thumb"] {
+    background: #7c3aed;
+  }
 
-[data-design-style="glassmorphism"] [data-slot="button"]:focus-visible,
-[data-design-style="glassmorphism"] [data-slot="input"]:focus-visible,
-[data-design-style="glassmorphism"] [data-slot="switch"]:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
+  [data-slot="progress"] {
+    height: 6px;
+    background: rgb(255 255 255 / 0.25);
+  }
+
+  [data-slot="progress-indicator"] {
+    background: #ffffff;
+  }
+
+  [data-slot="button"]:focus-visible,
+  [data-slot="input"]:focus-visible,
+  [data-slot="switch"]:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  /* icons: small frosted glass tiles */
+  [data-style-icon] {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.22);
+    border: 1px solid rgb(255 255 255 / 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #ffffff;
+  }
+
+  [data-style-icon] svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* other button variants */
+  [data-slot="button"][data-variant="secondary"] {
+    background: rgb(255 255 255 / 0.2);
+    color: #ffffff;
+  }
+
+  [data-slot="button"][data-variant="ghost"] {
+    background: transparent;
+    border-color: transparent;
+    color: #ffffff;
+  }
+
+  [data-slot="button"][data-variant="destructive"] {
+    background: rgb(239 68 68 / 0.6);
+    border-color: rgb(255 200 200 / 0.6);
+    color: #ffffff;
+  }
 }

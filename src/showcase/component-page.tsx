@@ -46,7 +46,7 @@ export function ComponentPage({ entry, entries }: { entry: ShowcaseEntry; entrie
           <div className="flex flex-wrap items-center gap-2">
             <span className="mr-1 text-sm text-ink-muted">다른 이름</span>
             {entry.aliases.map((alias) => (
-              <Badge key={alias} variant="outline" className="border-rule bg-white font-normal text-ink">
+              <Badge key={alias} variant="outline" className="border-rule bg-card font-normal text-ink">
                 {alias}
               </Badge>
             ))}

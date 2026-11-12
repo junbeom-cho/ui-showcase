@@ -1,7 +1,9 @@
 import { designStyles } from '@/design-styles/registry'
+import { usePageStyle } from '@/design-styles/theme'
 import { StylePage } from '@/design-styles/style-page'
 import { StylesIndexPage } from '@/design-styles/styles-index-page'
-import { AppSidebar, MobileNav } from '@/showcase/app-sidebar'
+import { cn } from '@/lib/utils'
+import { AppHeader, AppSidebar } from '@/showcase/app-sidebar'
 import { ComponentPage } from '@/showcase/component-page'
 import { OverviewPage } from '@/showcase/overview-page'
 import { entries } from '@/showcase/registry'
@@ -56,15 +58,30 @@ function usePage() {
   }
 }
 
+const styleIds = designStyles.map((s) => s.id)
+
 function App() {
   const { route, content } = usePage()
 
+  // A style page is its own finished page: the whole screen wears the style (D-018).
+  usePageStyle(route.page === 'style' && styleIds.includes(route.id) ? route.id : null)
+
+  // A style page is a whole dashboard, so it gets the full width (D-016).
+  const wide = route.page === 'style'
+
   return (
-    <div className="flex min-h-svh">
-      <AppSidebar entries={entries} styles={designStyles} route={route} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileNav entries={entries} styles={designStyles} route={route} />
-        <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-8 lg:px-12 lg:py-14">{content}</main>
+    <div className="flex min-h-svh flex-col">
+      <AppHeader entries={entries} styles={designStyles} route={route} />
+      <div className="flex flex-1">
+        <AppSidebar entries={entries} styles={designStyles} route={route} />
+        <main
+          className={cn(
+            'mx-auto w-full min-w-0 px-4 py-10 sm:px-8 lg:py-14',
+            wide ? 'max-w-none lg:px-10' : 'max-w-5xl lg:px-12',
+          )}
+        >
+          {content}
+        </main>
       </div>
     </div>
   )

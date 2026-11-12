@@ -27,7 +27,7 @@ export const designStyles: DesignStyle[] = [
       { slot: 'button', title: '단색 면', description: '버튼은 그라디언트 없이 한 가지 색으로만 칠해져 있습니다.' },
       { slot: 'card', title: '그림자 없음', description: '카드와 버튼 어디에도 그림자가 없어 모든 요소가 같은 높이에 있는 것처럼 보입니다.' },
       { slot: 'badge', title: '선명한 원색', description: '배지와 버튼은 채도가 높은 원색 계열로 눈에 띕니다.' },
-      { slot: 'demo-icon-bell', title: '단순한 선 아이콘과 큰 글자', description: '아이콘은 장식 없는 단색 선이고, 이름은 크고 굵게 씁니다.' },
+      { slot: 'demo-icon-bell', title: '단순한 선 아이콘과 큰 글자', description: '아이콘은 원색 원 안에 장식 없는 흰 선으로 그리고, 이름은 크고 굵게 씁니다.' },
     ],
   },
   {

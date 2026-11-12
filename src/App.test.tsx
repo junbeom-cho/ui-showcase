@@ -10,6 +10,33 @@ function go(hash: string) {
 
 beforeEach(() => {
   window.location.hash = ''
+  localStorage.clear()
+  delete document.documentElement.dataset.designStyle
+})
+
+it('dresses the whole screen in a style only while its page is open (D-018)', () => {
+  render(<App />)
+  expect(document.documentElement).not.toHaveAttribute('data-design-style')
+  go('#/style/flat')
+  expect(document.documentElement).toHaveAttribute('data-design-style', 'flat')
+  go('#/style/neumorphism')
+  expect(document.documentElement).toHaveAttribute('data-design-style', 'neumorphism')
+  go('#/styles')
+  expect(document.documentElement).not.toHaveAttribute('data-design-style')
+  go('#/style/flat')
+  go('#/card')
+  expect(document.documentElement).not.toHaveAttribute('data-design-style')
+})
+
+it('has no app-wide theme picker', () => {
+  render(<App />)
+  expect(screen.queryByRole('button', { name: '테마 선택' })).toBeNull()
+})
+
+it('keeps the default look for an unknown style id', () => {
+  window.location.hash = '#/style/vaporwave'
+  render(<App />)
+  expect(document.documentElement).not.toHaveAttribute('data-design-style')
 })
 
 it('opens on the overview', () => {

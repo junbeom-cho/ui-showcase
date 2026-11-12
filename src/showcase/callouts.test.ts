@@ -35,6 +35,12 @@ it('uses the other margin when one side has no room level with the part', () => 
   expect(header!.chipY).toBeLessThanOrEqual(44)
 })
 
+it('puts the chip columns outside the given bounds, not just outside the marked parts', () => {
+  // a part in the middle of a wide page: chips still go to the page margins
+  const [mid] = layoutCallouts([rect(200, 50, 100, 40)], 1000, { left: 40, right: 960 })
+  expect(mid!.chipX).toBeLessThan(40)
+})
+
 it('keeps missing parts as null', () => {
   expect(layoutCallouts([null, rect(0, 0, 10, 10)], 100)[0]).toBeNull()
 })

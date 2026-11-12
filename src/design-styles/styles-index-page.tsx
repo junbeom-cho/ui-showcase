@@ -5,9 +5,10 @@ import type { DesignStyle } from './types'
 /** A drawing sheet per style: the demo shrunk to a thumbnail, title block below. */
 function StyleCard({ style }: { style: DesignStyle }) {
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-md border border-rule bg-white hover:border-blueprint has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-blueprint/40">
-      <div inert className="bg-graph flex h-[18rem] justify-center overflow-hidden pt-4">
-        <div className="w-[22rem] shrink-0 origin-top scale-[0.62]">
+    <article data-slot="app-surface" className="group relative flex flex-col overflow-hidden rounded-md border border-rule bg-card hover:border-blueprint has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-blueprint/40">
+      {/* the dashboard is laid out at desktop width, then shrunk to fit the card */}
+      <div inert className="bg-graph flex h-[11.5rem] justify-center overflow-hidden pt-3">
+        <div className="w-[1000px] shrink-0 origin-top scale-[0.3]">
           <DemoApp styleId={style.id} />
         </div>
       </div>

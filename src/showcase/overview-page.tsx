@@ -6,7 +6,7 @@ import type { ShowcaseEntry } from './types'
 /** A drawing sheet: live thumbnail on top, title block below. */
 function EntryCard({ entry }: { entry: ShowcaseEntry }) {
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-md border border-rule bg-white hover:border-blueprint has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-blueprint/40">
+    <article data-slot="app-surface" className="group relative flex flex-col overflow-hidden rounded-md border border-rule bg-card hover:border-blueprint has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-blueprint/40">
       <div inert className="bg-graph flex h-48 min-w-0 items-center justify-center overflow-hidden p-5">
         <entry.Preview />
       </div>

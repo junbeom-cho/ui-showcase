@@ -1,5 +1,5 @@
-import { useId, useState } from 'react'
-import { BellIcon, CloudIcon, FolderOpenIcon, SearchIcon, type LucideIcon } from 'lucide-react'
+import { useId } from 'react'
+import { PlusIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,11 +10,14 @@ import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import { supportsRefraction } from './refraction'
+import { StyleIcon, type IconName } from './style-icon'
 import './styles/index.css'
 
 /** Every data-slot inside the demo that a style trait may point at. */
 export const DEMO_SLOTS = [
   'demo-backdrop',
+  'demo-topbar',
+  'demo-sidebar',
   'card',
   'avatar',
   'badge',
@@ -32,40 +35,11 @@ export const DEMO_SLOTS = [
   'button',
 ] as const
 
-type IconName = 'search' | 'bell' | 'cloud' | 'storage'
-
-const ICONS: Record<IconName, { Icon: LucideIcon; alt: string }> = {
-  search: { Icon: SearchIcon, alt: '검색 아이콘' },
-  bell: { Icon: BellIcon, alt: '알림 아이콘' },
-  cloud: { Icon: CloudIcon, alt: '백업 아이콘' },
-  storage: { Icon: FolderOpenIcon, alt: '저장 공간 아이콘' },
-}
-
 const base = import.meta.env.BASE_URL
 
-/** Line icon by default; a rendered 3D image in the 3d-icons style, falling back to the line icon. */
-function DemoIcon({ name, styleId }: { name: IconName; styleId: string }) {
-  const [failed, setFailed] = useState(false)
-  const { Icon, alt } = ICONS[name]
-  const threeD = styleId === '3d-icons'
-
-  return (
-    <span
-      data-slot={`demo-icon-${name}`}
-      className={cn('flex shrink-0 items-center justify-center', threeD ? 'size-8' : 'size-5')}
-    >
-      {threeD && !failed ? (
-        <img
-          src={`${base}icons-3d/${name}.png`}
-          alt={alt}
-          className="size-full object-contain"
-          onError={() => setFailed(true)}
-        />
-      ) : (
-        <Icon aria-hidden className="size-full" />
-      )}
-    </span>
-  )
+/** The four icons a style trait can point at, each with its own data-slot. */
+function DemoIcon({ name, styleId }: { name: 'search' | 'bell' | 'cloud' | 'storage'; styleId: string }) {
+  return <StyleIcon name={name} styleId={styleId} slot={`demo-icon-${name}`} />
 }
 
 /**
@@ -116,9 +90,30 @@ function LiquidGlassFilter() {
   )
 }
 
+const MENU: { label: string; icon: IconName }[] = [
+  { label: '홈', icon: 'home' },
+  { label: '프로젝트', icon: 'projects' },
+  { label: '팀', icon: 'team' },
+  { label: '설정', icon: 'settings' },
+]
+
+const STATS = [
+  { label: '방문자', value: '12,480', change: '+8.2%' },
+  { label: '가입', value: '342', change: '-2.1%' },
+  { label: '매출', value: '₩4.2M', change: '+12.5%' },
+]
+
+const PROJECTS = [
+  { name: '웹사이트 리뉴얼', status: '진행 중', progress: 64 },
+  { name: '모바일 앱 출시', status: '검토 중', progress: 88 },
+  { name: '브랜드 가이드', status: '완료', progress: 100 },
+]
+
 /**
- * The same small settings screen in every style. Only the CSS scoped by
+ * One web-app dashboard drawn in every style (D-016). Only the CSS scoped by
  * data-design-style changes; content, layout and element count never do.
+ * Layout reacts to the demo's own width (container queries), so a shrunken
+ * thumbnail still shows the desktop arrangement.
  */
 export function DemoApp({ styleId }: { styleId: string }) {
   const uid = useId()
@@ -128,59 +123,126 @@ export function DemoApp({ styleId }: { styleId: string }) {
       data-design-style={styleId}
       data-slot="demo-backdrop"
       data-refraction={supportsRefraction() ? 'on' : 'off'}
-      className="flex w-full max-w-[22rem] justify-center rounded-2xl p-5 sm:p-6"
+      className="@container w-full rounded-2xl p-3 text-sm @lg:p-5"
     >
       {styleId === 'liquid-glass' && <LiquidGlassFilter />}
-      <Card className="w-full max-w-[20rem] gap-5 px-5 py-5">
-        <div className="flex items-center gap-3">
-          <Avatar size="lg">
+      <div className="flex flex-col gap-4">
+        <div
+          data-slot="demo-topbar"
+          className="flex items-center gap-3 rounded-xl bg-card px-4 py-2.5 text-card-foreground ring-1 ring-foreground/10"
+        >
+          <span className="hidden shrink-0 font-semibold @2xl:block">스튜디오</span>
+          <div className="flex min-w-0 flex-1 items-center gap-2 @2xl:max-w-xs">
+            <DemoIcon name="search" styleId={styleId} />
+            <Input aria-label="프로젝트 검색" placeholder="프로젝트 검색" />
+          </div>
+          <span className="relative ml-auto flex shrink-0" title="새 알림 3개">
+            <DemoIcon name="bell" styleId={styleId} />
+            <Badge className="absolute -top-2 -right-2.5 h-4 min-w-4 px-1 text-[10px]">3</Badge>
+          </span>
+          <Avatar>
             <AvatarImage src={`${base}avatar.svg`} alt="" />
             <AvatarFallback>김</AvatarFallback>
           </Avatar>
-          <p data-slot="demo-name" className="flex-1 font-semibold">
+          <p data-slot="demo-name" className="hidden font-semibold @lg:block">
             김하늘
           </p>
-          <Badge>프로</Badge>
         </div>
 
-        <div className="flex items-center gap-3">
-          <DemoIcon name="search" styleId={styleId} />
-          <Input aria-label="설정 검색" placeholder="설정 검색" />
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <DemoIcon name="bell" styleId={styleId} />
-            <Label htmlFor={`${uid}-notify`} className="flex-1">
-              알림 받기
-            </Label>
-            <Switch id={`${uid}-notify`} defaultChecked />
+        <div className="flex gap-4">
+          <div
+            data-slot="demo-sidebar"
+            className="hidden w-40 shrink-0 flex-col gap-1 rounded-xl bg-card p-2 text-card-foreground ring-1 ring-foreground/10 @3xl:flex"
+          >
+            {MENU.map(({ label, icon }, i) => (
+              <span
+                key={label}
+                data-slot="demo-nav-item"
+                aria-current={i === 0 ? 'page' : undefined}
+                className={cn(
+                  'flex items-center gap-2 rounded-lg px-3 py-2',
+                  i === 0 ? 'bg-foreground/[.06] font-semibold' : 'opacity-75',
+                )}
+              >
+                <StyleIcon name={icon} styleId={styleId} decorative />
+                {label}
+              </span>
+            ))}
           </div>
-          <div className="flex items-center gap-3">
-            <DemoIcon name="cloud" styleId={styleId} />
-            <Label htmlFor={`${uid}-backup`} className="flex-1">
-              자동 백업
-            </Label>
-            <Switch id={`${uid}-backup`} />
+
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold">안녕하세요, 김하늘님</h3>
+                <p className="opacity-75">이번 주 진행 상황입니다.</p>
+              </div>
+              <Button>
+                <PlusIcon data-icon="inline-start" />새 프로젝트
+              </Button>
+            </div>
+
+            <div className="grid gap-3 @lg:grid-cols-3">
+              {STATS.map((s) => (
+                <Card key={s.label} size="sm" className="px-4">
+                  <div className="flex items-center justify-between">
+                    <span className="opacity-75">{s.label}</span>
+                    <Badge variant="outline">{s.change}</Badge>
+                  </div>
+                  <p className="text-2xl font-semibold tabular-nums">{s.value}</p>
+                </Card>
+              ))}
+            </div>
+
+            <div className="grid gap-4 @4xl:grid-cols-[1.4fr_1fr]">
+              <Card className="gap-3 px-5">
+                <h4 className="font-semibold">최근 프로젝트</h4>
+                <ul className="flex flex-col gap-3">
+                  {PROJECTS.map((p) => (
+                    <li key={p.name} aria-label={`${p.name} 프로젝트`} className="flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">{p.name}</span>
+                        <Badge variant="secondary">{p.status}</Badge>
+                      </div>
+                      <Progress value={p.progress} aria-label={`${p.name} 진행률 ${p.progress}%`} />
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+
+              <Card className="gap-4 px-5">
+                <h4 className="font-semibold">설정</h4>
+                <div className="flex items-center gap-3">
+                  <Label htmlFor={`${uid}-notify`} className="flex-1">
+                    알림 받기
+                  </Label>
+                  <Switch id={`${uid}-notify`} defaultChecked />
+                </div>
+                <div className="flex items-center gap-3">
+                  <DemoIcon name="cloud" styleId={styleId} />
+                  <Label htmlFor={`${uid}-backup`} className="flex-1">
+                    자동 백업
+                  </Label>
+                  <Switch id={`${uid}-backup`} />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <DemoIcon name="storage" styleId={styleId} />
+                    <span className="flex-1">저장 공간</span>
+                    <span className="tabular-nums">70%</span>
+                  </div>
+                  <Progress value={70} aria-label="저장 공간 70%" />
+                </div>
+                <div data-slot="demo-actions" className="flex gap-2">
+                  <Button className="flex-1">저장</Button>
+                  <Button variant="outline" className="flex-1">
+                    취소
+                  </Button>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-3 text-sm">
-            <DemoIcon name="storage" styleId={styleId} />
-            <span className="flex-1">저장 공간</span>
-            <span className="tabular-nums">70%</span>
-          </div>
-          <Progress value={70} aria-label="저장 공간 70%" />
-        </div>
-
-        <div data-slot="demo-actions" className="flex gap-2">
-          <Button className="flex-1">저장</Button>
-          <Button variant="outline" className="flex-1">
-            취소
-          </Button>
-        </div>
-      </Card>
+      </div>
     </div>
   )
 }

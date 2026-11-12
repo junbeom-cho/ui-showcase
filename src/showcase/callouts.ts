@@ -17,12 +17,17 @@ const MARGIN = 26
  * level with the part where possible, like callouts on a technical drawing.
  * Chips never cover the component itself.
  */
-export function layoutCallouts(rects: (Rect | null)[], stageWidth: number): (Callout | null)[] {
+export function layoutCallouts(
+  rects: (Rect | null)[],
+  stageWidth: number,
+  /** Outer edges of the specimen; chips sit outside these even if no part reaches them. */
+  bounds?: { left: number; right: number },
+): (Callout | null)[] {
   const present = rects.filter((r): r is Rect => r !== null)
   if (present.length === 0) return rects.map(() => null)
 
-  const minLeft = Math.min(...present.map((r) => r.left))
-  const maxRight = Math.max(...present.map((r) => r.left + r.width))
+  const minLeft = Math.min(bounds?.left ?? Infinity, ...present.map((r) => r.left))
+  const maxRight = Math.max(bounds?.right ?? -Infinity, ...present.map((r) => r.left + r.width))
   const placed: Record<Callout['side'], number[]> = { left: [], right: [] }
   const result: (Callout | null)[] = rects.map(() => null)
 

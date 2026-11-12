@@ -12,6 +12,7 @@ function preventHashNavigation(event: MouseEvent<HTMLDivElement>) {
 export function Specimen({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
+      data-slot="app-surface"
       onClick={preventHashNavigation}
       className={cn(
         'bg-graph flex min-h-44 min-w-0 items-center justify-center rounded-md border border-rule p-6 sm:p-10',
