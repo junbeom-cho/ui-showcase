@@ -68,6 +68,18 @@ it('marks one trait on the dashboard while it is hovered', async () => {
   expect(screen.getAllByTestId('anatomy-marker')).toHaveLength(neu.traits.length)
 })
 
+it('brings the dashboard back home when traits are shown, so every trait has its part', async () => {
+  const icons3d = designStyles.find((s) => s.id === '3d-icons')!
+  const { container } = render(<StylePage style={icons3d} styles={designStyles} />)
+  const sidebar = container.querySelector<HTMLElement>('[data-slot="demo-sidebar"]')!
+  await user.click(within(sidebar).getByRole('button', { name: '팀' }))
+  expect(container.querySelector('[data-slot="demo-icon-storage"]')).toBeNull()
+  await openPanel()
+  await user.click(screen.getByRole('switch', { name: '특징 번호 모두 표시' }))
+  expect(screen.getByRole('heading', { name: '안녕하세요, 김하늘님' })).toBeInTheDocument()
+  expect(screen.getAllByTestId('anatomy-marker')).toHaveLength(icons3d.traits.length)
+})
+
 it('links breadcrumb and neighbours', () => {
   render(<StylePage style={neu} styles={designStyles} />)
   const crumbs = screen.getByRole('navigation', { name: 'breadcrumb' })

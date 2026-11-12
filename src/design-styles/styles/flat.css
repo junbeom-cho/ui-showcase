@@ -40,7 +40,9 @@
   [data-slot="card"],
   [data-slot="demo-topbar"],
   [data-slot="demo-sidebar"],
-  [data-slot="app-surface"] {
+  [data-slot="app-surface"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
     background: #ffffff;
     color: #2c3e50;
     border-radius: 4px;
@@ -202,5 +204,63 @@
   [data-slot="button"][data-variant="destructive"] {
     background: #c0392b;
     color: #ffffff;
+  }
+
+  /* pop-ups, tabs, checkbox and the current menu item (D-019) */
+  [data-slot="dialog-overlay"] {
+    background: rgb(44 62 80 / 0.6);
+    backdrop-filter: none;
+  }
+
+  [data-slot="dialog-footer"] {
+    background: #ecf0f1;
+    border: none;
+  }
+
+  /* no shadow to lift it, so a solid edge marks the menu */
+  [data-slot="dropdown-menu-content"] {
+    border: 2px solid #2c3e50;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus {
+    background: #3498db;
+    color: #ffffff;
+  }
+
+  [data-slot="tabs-list"] {
+    background: #ecf0f1;
+    border-radius: 4px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  [data-slot="tabs-trigger"] {
+    border-radius: 0;
+    color: #566573;
+    font-weight: 700;
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background: #3498db;
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  [data-slot="checkbox"] {
+    border: 2px solid #bdc3c7;
+    border-radius: 2px;
+    box-shadow: none;
+  }
+
+  [data-slot="checkbox"][data-state="checked"] {
+    background: #2ecc71;
+    border-color: #2ecc71;
+    color: #ffffff;
+  }
+
+  [data-slot="demo-nav-item"][aria-current="page"] {
+    background: #3498db;
+    color: #ffffff;
+    border-radius: 4px;
   }
 }

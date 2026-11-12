@@ -1,14 +1,17 @@
-import { useId } from 'react'
-import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Progress } from '@/components/ui/progress'
-import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
+import {
+  HomeView,
+  INITIAL_PROJECTS,
+  NotificationsMenu,
+  ProjectsView,
+  SettingsView,
+  TeamView,
+  type Project,
+  type Settings,
+} from './demo-views'
 import { supportsRefraction } from './refraction'
 import { StyleIcon, type IconName } from './style-icon'
 import './styles/index.css'
@@ -36,11 +39,6 @@ export const DEMO_SLOTS = [
 ] as const
 
 const base = import.meta.env.BASE_URL
-
-/** The four icons a style trait can point at, each with its own data-slot. */
-function DemoIcon({ name, styleId }: { name: 'search' | 'bell' | 'cloud' | 'storage'; styleId: string }) {
-  return <StyleIcon name={name} styleId={styleId} slot={`demo-icon-${name}`} />
-}
 
 /**
  * Displacement map for the glass edge. Red carries the horizontal shift, green the
@@ -90,33 +88,55 @@ function LiquidGlassFilter() {
   )
 }
 
-const MENU: { label: string; icon: IconName }[] = [
-  { label: '홈', icon: 'home' },
-  { label: '프로젝트', icon: 'projects' },
-  { label: '팀', icon: 'team' },
-  { label: '설정', icon: 'settings' },
+export type DemoView = 'home' | 'projects' | 'team' | 'settings'
+
+const MENU: { view: DemoView; label: string; icon: IconName }[] = [
+  { view: 'home', label: '홈', icon: 'home' },
+  { view: 'projects', label: '프로젝트', icon: 'projects' },
+  { view: 'team', label: '팀', icon: 'team' },
+  { view: 'settings', label: '설정', icon: 'settings' },
 ]
 
-const STATS = [
-  { label: '방문자', value: '12,480', change: '+8.2%' },
-  { label: '가입', value: '342', change: '-2.1%' },
-  { label: '매출', value: '₩4.2M', change: '+12.5%' },
-]
-
-const PROJECTS = [
-  { name: '웹사이트 리뉴얼', status: '진행 중', progress: 64 },
-  { name: '모바일 앱 출시', status: '검토 중', progress: 88 },
-  { name: '브랜드 가이드', status: '완료', progress: 100 },
-]
+const INITIAL_SETTINGS: Settings = { notify: true, backup: false }
 
 /**
  * One web-app dashboard drawn in every style (D-016). Only the CSS scoped by
  * data-design-style changes; content, layout and element count never do.
  * Layout reacts to the demo's own width (container queries), so a shrunken
  * thumbnail still shows the desktop arrangement.
+ *
+ * It also works like a small app (D-019): the side menu switches views, the
+ * search box filters projects, and the bell, dialog and settings respond.
+ * Pass `view` and `onViewChange` to control the current view from outside.
  */
-export function DemoApp({ styleId }: { styleId: string }) {
-  const uid = useId()
+export function DemoApp({
+  styleId,
+  view: controlledView,
+  onViewChange,
+}: {
+  styleId: string
+  view?: DemoView
+  onViewChange?: (view: DemoView) => void
+}) {
+  const [ownView, setOwnView] = useState<DemoView>('home')
+  const view = controlledView ?? ownView
+  const setView = (next: DemoView) => {
+    setOwnView(next)
+    onViewChange?.(next)
+  }
+
+  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS)
+  const [query, setQuery] = useState('')
+  const [unread, setUnread] = useState(3)
+  const [savedSettings, setSavedSettings] = useState(INITIAL_SETTINGS)
+  const [settings, setSettings] = useState(INITIAL_SETTINGS)
+  const [notice, setNotice] = useState('')
+
+  const createProject = (name: string) =>
+    setProjects((list) => [
+      { id: Math.max(0, ...list.map((p) => p.id)) + 1, name, status: '진행 중', progress: 0 },
+      ...list,
+    ])
 
   return (
     <div
@@ -133,13 +153,19 @@ export function DemoApp({ styleId }: { styleId: string }) {
         >
           <span className="hidden shrink-0 font-semibold @2xl:block">스튜디오</span>
           <div className="flex min-w-0 flex-1 items-center gap-2 @2xl:max-w-xs">
-            <DemoIcon name="search" styleId={styleId} />
-            <Input aria-label="프로젝트 검색" placeholder="프로젝트 검색" />
+            <StyleIcon name="search" styleId={styleId} slot="demo-icon-search" />
+            <Input
+              aria-label="프로젝트 검색"
+              placeholder="프로젝트 검색"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                // Team and settings have no projects to filter; show the list that does.
+                if (view === 'team' || view === 'settings') setView('projects')
+              }}
+            />
           </div>
-          <span className="relative ml-auto flex shrink-0" title="새 알림 3개">
-            <DemoIcon name="bell" styleId={styleId} />
-            <Badge className="absolute -top-2 -right-2.5 h-4 min-w-4 px-1 text-[10px]">3</Badge>
-          </span>
+          <NotificationsMenu styleId={styleId} unread={unread} onReadAll={() => setUnread(0)} />
           <Avatar>
             <AvatarImage src={`${base}avatar.svg`} alt="" />
             <AvatarFallback>김</AvatarFallback>
@@ -149,98 +175,56 @@ export function DemoApp({ styleId }: { styleId: string }) {
           </p>
         </div>
 
-        <div className="flex gap-4">
-          <div
+        <div className="flex flex-col gap-4 @3xl:flex-row">
+          <nav
+            aria-label="데모 메뉴"
             data-slot="demo-sidebar"
-            className="hidden w-40 shrink-0 flex-col gap-1 rounded-xl bg-card p-2 text-card-foreground ring-1 ring-foreground/10 @3xl:flex"
+            className="grid shrink-0 grid-cols-4 gap-1 rounded-xl bg-card p-2 text-card-foreground ring-1 ring-foreground/10 @3xl:flex @3xl:w-40 @3xl:flex-col @3xl:self-start"
           >
-            {MENU.map(({ label, icon }, i) => (
-              <span
-                key={label}
+            {MENU.map((item) => (
+              <button
+                key={item.view}
+                type="button"
                 data-slot="demo-nav-item"
-                aria-current={i === 0 ? 'page' : undefined}
+                aria-current={view === item.view ? 'page' : undefined}
+                onClick={() => setView(item.view)}
                 className={cn(
-                  'flex items-center gap-2 rounded-lg px-3 py-2',
-                  i === 0 ? 'bg-foreground/[.06] font-semibold' : 'opacity-75',
+                  // narrow: four tabs with the label under the icon; wide: icon and label side by side
+                  'flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-xs outline-none transition-colors hover:bg-foreground/[.04] focus-visible:ring-3 focus-visible:ring-ring/50 @xl:flex-row @xl:gap-2 @xl:px-3 @xl:text-sm @3xl:justify-start',
+                  view === item.view ? 'bg-foreground/[.06] font-semibold' : 'opacity-75 hover:opacity-100',
                 )}
               >
-                <StyleIcon name={icon} styleId={styleId} decorative />
-                {label}
-              </span>
+                <StyleIcon name={item.icon} styleId={styleId} decorative />
+                {item.label}
+              </button>
             ))}
-          </div>
+          </nav>
 
-          <div className="flex min-w-0 flex-1 flex-col gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h3 className="text-lg font-semibold">안녕하세요, 김하늘님</h3>
-                <p className="opacity-75">이번 주 진행 상황입니다.</p>
-              </div>
-              <Button>
-                <PlusIcon data-icon="inline-start" />새 프로젝트
-              </Button>
-            </div>
-
-            <div className="grid gap-3 @lg:grid-cols-3">
-              {STATS.map((s) => (
-                <Card key={s.label} size="sm" className="px-4">
-                  <div className="flex items-center justify-between">
-                    <span className="opacity-75">{s.label}</span>
-                    <Badge variant="outline">{s.change}</Badge>
-                  </div>
-                  <p className="text-2xl font-semibold tabular-nums">{s.value}</p>
-                </Card>
-              ))}
-            </div>
-
-            <div className="grid gap-4 @4xl:grid-cols-[1.4fr_1fr]">
-              <Card className="gap-3 px-5">
-                <h4 className="font-semibold">최근 프로젝트</h4>
-                <ul className="flex flex-col gap-3">
-                  {PROJECTS.map((p) => (
-                    <li key={p.name} aria-label={`${p.name} 프로젝트`} className="flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-medium">{p.name}</span>
-                        <Badge variant="secondary">{p.status}</Badge>
-                      </div>
-                      <Progress value={p.progress} aria-label={`${p.name} 진행률 ${p.progress}%`} />
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-
-              <Card className="gap-4 px-5">
-                <h4 className="font-semibold">설정</h4>
-                <div className="flex items-center gap-3">
-                  <Label htmlFor={`${uid}-notify`} className="flex-1">
-                    알림 받기
-                  </Label>
-                  <Switch id={`${uid}-notify`} defaultChecked />
-                </div>
-                <div className="flex items-center gap-3">
-                  <DemoIcon name="cloud" styleId={styleId} />
-                  <Label htmlFor={`${uid}-backup`} className="flex-1">
-                    자동 백업
-                  </Label>
-                  <Switch id={`${uid}-backup`} />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-3">
-                    <DemoIcon name="storage" styleId={styleId} />
-                    <span className="flex-1">저장 공간</span>
-                    <span className="tabular-nums">70%</span>
-                  </div>
-                  <Progress value={70} aria-label="저장 공간 70%" />
-                </div>
-                <div data-slot="demo-actions" className="flex gap-2">
-                  <Button className="flex-1">저장</Button>
-                  <Button variant="outline" className="flex-1">
-                    취소
-                  </Button>
-                </div>
-              </Card>
-            </div>
-          </div>
+          {view === 'home' && (
+            <HomeView
+              styleId={styleId}
+              projects={projects}
+              query={query}
+              onCreate={createProject}
+              settings={settings}
+              onSettingsChange={(next) => {
+                setSettings(next)
+                setNotice('')
+              }}
+              notice={notice}
+              onSave={() => {
+                setSavedSettings(settings)
+                setNotice('설정을 저장했습니다')
+              }}
+              onCancel={() => {
+                setSettings(savedSettings)
+                setNotice('저장한 설정으로 되돌렸습니다')
+              }}
+            />
+          )}
+          {view === 'projects' && <ProjectsView projects={projects} query={query} />}
+          {view === 'team' && <TeamView />}
+          {view === 'settings' && <SettingsView />}
         </div>
       </div>
     </div>

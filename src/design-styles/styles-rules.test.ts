@@ -43,7 +43,25 @@ describe('app-wide theme (D-017)', () => {
   })
 
   it.each(styleFiles)('%s dresses the app surfaces like its cards', (_path, css) => {
-    expect(css).toMatch(/\[data-slot="demo-sidebar"\],\s*\[data-slot="app-surface"\] \{/)
+    expect(css).toMatch(/\[data-slot="demo-sidebar"\],\s*\[data-slot="app-surface"\],/)
+  })
+})
+
+describe('pop-ups, tabs and checkbox on the interactive dashboard (D-019)', () => {
+  it.each(styleFiles)('%s dresses dialogs and menus like its cards', (_path, css) => {
+    expect(css).toMatch(
+      /\[data-slot="app-surface"\],\s*\[data-slot="dialog-content"\],\s*\[data-slot="dropdown-menu-content"\] \{/,
+    )
+  })
+
+  it.each(styleFiles)('%s marks the chosen tab, the checked box and the current menu item', (_path, css) => {
+    expect(declarations(css, '[data-slot="tabs-trigger"][data-state="active"]').background, 'tab').toBeTruthy()
+    expect(declarations(css, '[data-slot="checkbox"][data-state="checked"]').color, 'checkbox').toBeTruthy()
+    expect(declarations(css, '[data-slot="demo-nav-item"][aria-current="page"]').background, 'menu').toBeTruthy()
+  })
+
+  it('keeps icon-only buttons square in every style', () => {
+    expect(declarations(files['./styles/index.css'], '[data-slot="button"][data-size^="icon"]').height).toBe('revert-layer')
   })
 })
 

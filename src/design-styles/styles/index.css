@@ -7,3 +7,16 @@
 @import "./neo-brutalism.css";
 @import "./3d-icons.css";
 @import "./liquid-glass.css";
+
+/* Rules every style shares (D-019) */
+@scope ([data-design-style]) to ([data-design-style]) {
+  /* styles set a height for text buttons; icon-only buttons keep their own square size */
+  [data-slot="button"][data-size^="icon"] {
+    height: revert-layer;
+  }
+
+  /* the dialog footer follows each style's corner radius */
+  [data-slot="dialog-content"] {
+    overflow: hidden;
+  }
+}

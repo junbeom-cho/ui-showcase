@@ -15,7 +15,7 @@ import { CalloutLayer, PartList, ShowAllSwitch, useCallouts } from '@/showcase/a
 import { NeighbourLinks } from '@/showcase/neighbour-links'
 import { styleHref } from '@/showcase/route'
 import type { AnatomyPart } from '@/showcase/types'
-import { DemoApp } from './demo-app'
+import { DemoApp, type DemoView } from './demo-app'
 import { StyleSamples } from './style-samples'
 import type { DesignStyle } from './types'
 
@@ -70,6 +70,12 @@ export function StylePage({ style, styles }: { style: DesignStyle; styles: Desig
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState<number | null>(null)
   const [showAll, setShowAll] = useState(false)
+  // Traits point at parts of the home view, so showing them brings the dashboard home.
+  const [view, setView] = useState<DemoView>('home')
+  const markOnHome = <T,>(set: (value: T) => void) => (value: T) => {
+    if (value !== null && value !== false) setView('home')
+    set(value)
+  }
   const { stageRef, specimenRef, callouts } = useCallouts(parts)
 
   const index = styles.findIndex((s) => s.id === style.id)
@@ -121,7 +127,7 @@ export function StylePage({ style, styles }: { style: DesignStyle; styles: Desig
         {/* side padding leaves room for the number chips in the margin */}
         <div ref={stageRef} className="relative -mx-4 min-w-0 px-9 sm:mx-0">
           <div ref={specimenRef}>
-            <DemoApp styleId={style.id} />
+            <DemoApp styleId={style.id} view={view} onViewChange={setView} />
           </div>
           <CalloutLayer
             callouts={callouts}
@@ -135,9 +141,9 @@ export function StylePage({ style, styles }: { style: DesignStyle; styles: Desig
             style={style}
             parts={parts}
             active={active}
-            onActiveChange={setActive}
+            onActiveChange={markOnHome(setActive)}
             showAll={showAll}
-            onShowAllChange={setShowAll}
+            onShowAllChange={markOnHome(setShowAll)}
             onClose={close}
           />
         )}
@@ -149,7 +155,10 @@ export function StylePage({ style, styles }: { style: DesignStyle; styles: Desig
 
       {!open && (
         <Button
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setView('home')
+            setOpen(true)
+          }}
           className="fixed right-6 bottom-6 z-20 h-10 rounded-full bg-ink px-4 text-white shadow-lg hover:bg-ink/90"
         >
           <ListIcon data-icon="inline-start" />

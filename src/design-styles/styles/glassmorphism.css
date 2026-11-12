@@ -44,7 +44,9 @@
   [data-slot="card"],
   [data-slot="demo-topbar"],
   [data-slot="demo-sidebar"],
-  [data-slot="app-surface"] {
+  [data-slot="app-surface"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
     background: rgb(255 255 255 / 0.16);
     color: #ffffff;
     border: 1px solid rgb(255 255 255 / 0.4);
@@ -172,5 +174,68 @@
     background: rgb(239 68 68 / 0.6);
     border-color: rgb(255 200 200 / 0.6);
     color: #ffffff;
+  }
+
+  /* pop-ups, tabs, checkbox and the current menu item (D-019) */
+  [data-slot="dialog-overlay"] {
+    background: rgb(30 0 60 / 0.25);
+  }
+
+  /* pop-ups float above the cards, so they frost more */
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
+    background: rgb(255 255 255 / 0.22);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+  }
+
+  [data-slot="dialog-footer"] {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  [data-slot="dropdown-menu-content"] {
+    padding: 6px;
+  }
+
+  [data-slot="dropdown-menu-item"] {
+    border-radius: 10px;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus {
+    background: rgb(255 255 255 / 0.25);
+    color: #ffffff;
+  }
+
+  [data-slot="tabs-list"] {
+    background: rgb(255 255 255 / 0.14);
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 12px;
+  }
+
+  [data-slot="tabs-trigger"] {
+    color: rgb(255 255 255 / 0.85);
+    border-radius: 9px;
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background: rgb(255 255 255 / 0.38);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgb(31 38 135 / 0.25);
+  }
+
+  [data-slot="checkbox"] {
+    background: rgb(255 255 255 / 0.18);
+    border: 1px solid rgb(255 255 255 / 0.6);
+  }
+
+  [data-slot="checkbox"][data-state="checked"] {
+    background: rgb(255 255 255 / 0.85);
+    color: #6d28d9;
+  }
+
+  [data-slot="demo-nav-item"][aria-current="page"] {
+    background: rgb(255 255 255 / 0.28);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
   }
 }

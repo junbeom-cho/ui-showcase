@@ -41,7 +41,9 @@
   [data-slot="card"],
   [data-slot="demo-topbar"],
   [data-slot="demo-sidebar"],
-  [data-slot="app-surface"] {
+  [data-slot="app-surface"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
     background: #e0e5ec;
     color: #44506a;
     border-radius: 24px;
@@ -190,5 +192,83 @@
 
   [data-slot="button"][data-variant="destructive"] {
     color: #c23b3b;
+  }
+
+  /* pop-ups, tabs, checkbox and the current menu item (D-019) */
+  [data-slot="dialog-overlay"] {
+    background: rgb(224 229 236 / 0.6);
+  }
+
+  [data-slot="dialog-footer"] {
+    background: transparent;
+    border-color: #c8d0dc;
+  }
+
+  [data-slot="dropdown-menu-content"] {
+    border-radius: 16px;
+    padding: 8px;
+    box-shadow:
+      -6px -6px 12px #ffffff,
+      6px 6px 12px #a3b1c6;
+  }
+
+  [data-slot="dropdown-menu-item"] {
+    border-radius: 10px;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus {
+    background: #e0e5ec;
+    box-shadow:
+      inset 2px 2px 4px #a3b1c6,
+      inset -2px -2px 4px #ffffff;
+  }
+
+  /* tabs: a sunken tray; the chosen tab rises out of it */
+  [data-slot="tabs-list"] {
+    background: #e0e5ec;
+    border-radius: 12px;
+    padding: 4px;
+    height: 38px;
+    box-shadow:
+      inset 3px 3px 6px #a3b1c6,
+      inset -3px -3px 6px #ffffff;
+  }
+
+  [data-slot="tabs-trigger"] {
+    border-radius: 9px;
+    color: #566179;
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background: #e0e5ec;
+    color: #4d6fe3;
+    box-shadow:
+      -2px -2px 4px #ffffff,
+      2px 2px 4px #a3b1c6;
+  }
+
+  [data-slot="checkbox"] {
+    background: #e0e5ec;
+    border: none;
+    border-radius: 6px;
+    box-shadow:
+      inset 2px 2px 4px #a3b1c6,
+      inset -2px -2px 4px #ffffff;
+  }
+
+  [data-slot="checkbox"][data-state="checked"] {
+    color: #4d6fe3;
+    box-shadow:
+      -2px -2px 4px #ffffff,
+      2px 2px 4px #a3b1c6;
+  }
+
+  /* the current page is pressed in */
+  [data-slot="demo-nav-item"][aria-current="page"] {
+    background: #e0e5ec;
+    color: #4d6fe3;
+    box-shadow:
+      inset 3px 3px 6px #a3b1c6,
+      inset -3px -3px 6px #ffffff;
   }
 }

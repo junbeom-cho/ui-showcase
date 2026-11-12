@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { DemoApp } from './demo-app'
 
 it('scopes the demo with data-design-style', () => {
@@ -31,6 +32,71 @@ it('marks the current item in the side menu', () => {
   const { container } = render(<DemoApp styleId="flat" />)
   const sidebar = container.querySelector<HTMLElement>('[data-slot="demo-sidebar"]')!
   expect(within(sidebar).getByText('홈').closest('[aria-current]')).toHaveAttribute('aria-current', 'page')
+})
+
+describe('things to try on the dashboard (D-019)', () => {
+  const user = userEvent.setup()
+  const sidebar = (container: HTMLElement) => container.querySelector<HTMLElement>('[data-slot="demo-sidebar"]')!
+
+  it('switches views from the side menu', async () => {
+    const { container } = render(<DemoApp styleId="flat" />)
+    await user.click(within(sidebar(container)).getByRole('button', { name: '팀' }))
+    expect(screen.getByRole('heading', { name: '팀원' })).toBeInTheDocument()
+    expect(within(sidebar(container)).getByRole('button', { name: '팀' })).toHaveAttribute('aria-current', 'page')
+    await user.click(within(sidebar(container)).getByRole('button', { name: '프로젝트' }))
+    expect(screen.getByRole('heading', { name: '모든 프로젝트' })).toBeInTheDocument()
+    await user.click(within(sidebar(container)).getByRole('button', { name: '설정' }))
+    expect(screen.getByRole('heading', { name: '계정 설정' })).toBeInTheDocument()
+    await user.click(within(sidebar(container)).getByRole('button', { name: '홈' }))
+    expect(screen.getByRole('heading', { name: '안녕하세요, 김하늘님' })).toBeInTheDocument()
+  })
+
+  it('changes the numbers with the period tabs', async () => {
+    render(<DemoApp styleId="flat" />)
+    expect(screen.getByText('12,480')).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: '이번 달' }))
+    expect(screen.getByText('48,920')).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: '오늘' }))
+    expect(screen.getByText('1,284')).toBeInTheDocument()
+  })
+
+  it('filters the projects with the search box', async () => {
+    render(<DemoApp styleId="flat" />)
+    await user.type(screen.getByRole('textbox', { name: '프로젝트 검색' }), '모바일')
+    expect(screen.getAllByRole('listitem', { name: /프로젝트$/ }).map((li) => li.getAttribute('aria-label'))).toEqual([
+      '모바일 앱 출시 프로젝트',
+    ])
+    await user.clear(screen.getByRole('textbox', { name: '프로젝트 검색' }))
+    await user.type(screen.getByRole('textbox', { name: '프로젝트 검색' }), '없는 이름')
+    expect(screen.getByText("'없는 이름'와 일치하는 프로젝트가 없습니다.")).toBeInTheDocument()
+  })
+
+  it('adds a project from the new-project dialog', async () => {
+    render(<DemoApp styleId="flat" />)
+    await user.click(screen.getByRole('button', { name: '새 프로젝트' }))
+    await user.type(screen.getByRole('textbox', { name: '프로젝트 이름' }), '여름 캠페인')
+    await user.click(screen.getByRole('button', { name: '만들기' }))
+    expect(screen.getByRole('listitem', { name: '여름 캠페인 프로젝트' })).toBeInTheDocument()
+  })
+
+  it('opens notifications and marks them read', async () => {
+    render(<DemoApp styleId="flat" />)
+    await user.click(screen.getByRole('button', { name: '알림 3개' }))
+    expect(screen.getAllByRole('menuitem').length).toBeGreaterThanOrEqual(3)
+    await user.click(screen.getByRole('menuitem', { name: '모두 읽음으로 표시' }))
+    expect(screen.getByRole('button', { name: '알림' })).toBeInTheDocument()
+  })
+
+  it('confirms when settings are saved and restores them on cancel', async () => {
+    render(<DemoApp styleId="flat" />)
+    await user.click(screen.getByRole('switch', { name: '자동 백업' }))
+    expect(screen.getByText('매일 새벽 3시에 백업합니다.')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '취소' }))
+    expect(screen.getByRole('switch', { name: '자동 백업' })).not.toBeChecked()
+    await user.click(screen.getByRole('switch', { name: '자동 백업' }))
+    await user.click(screen.getByRole('button', { name: '저장' }))
+    expect(screen.getByRole('status')).toHaveTextContent('설정을 저장했습니다')
+  })
 })
 
 it('uses line icons outside the 3d-icons style', () => {

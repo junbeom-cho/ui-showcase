@@ -41,7 +41,9 @@
   [data-slot="card"],
   [data-slot="demo-topbar"],
   [data-slot="demo-sidebar"],
-  [data-slot="app-surface"] {
+  [data-slot="app-surface"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
     background: #f3e8ff;
     color: #3b2a4a;
     border-radius: 32px;
@@ -247,5 +249,83 @@
       6px 8px 14px rgb(220 90 90 / 0.3),
       inset -3px -4px 8px rgb(200 60 60 / 0.25),
       inset 3px 4px 8px rgb(255 255 255 / 0.7);
+  }
+
+  /* pop-ups, tabs, checkbox and the current menu item (D-019) */
+  [data-slot="dialog-overlay"] {
+    background: rgb(120 90 180 / 0.2);
+  }
+
+  [data-slot="dialog-footer"] {
+    background: transparent;
+    border: none;
+  }
+
+  [data-slot="dropdown-menu-content"] {
+    border-radius: 24px;
+    padding: 8px;
+  }
+
+  [data-slot="dropdown-menu-item"] {
+    border-radius: 14px;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus {
+    background: #ffffff;
+    box-shadow:
+      3px 4px 8px rgb(150 110 200 / 0.25),
+      inset 2px 3px 5px rgb(255 255 255 / 0.9);
+  }
+
+  /* tabs: a soft trough; the chosen tab is a chubby pink pill */
+  [data-slot="tabs-list"] {
+    background: #ead9f5;
+    border-radius: 999px;
+    padding: 4px;
+    height: 40px;
+    box-shadow:
+      inset 2px 3px 6px rgb(120 90 160 / 0.3),
+      inset -2px -2px 4px rgb(255 255 255 / 0.8);
+  }
+
+  [data-slot="tabs-trigger"] {
+    border-radius: 999px;
+    color: #5f4e72;
+    font-weight: 700;
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background: #ffb3c7;
+    color: #5a1530;
+    box-shadow:
+      3px 4px 8px rgb(220 100 140 / 0.35),
+      inset -2px -3px 5px rgb(200 80 120 / 0.3),
+      inset 2px 3px 5px rgb(255 255 255 / 0.7);
+  }
+
+  [data-slot="checkbox"] {
+    width: 22px;
+    height: 22px;
+    background: #ffffff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: inset 2px 3px 5px rgb(150 110 200 / 0.3);
+  }
+
+  [data-slot="checkbox"][data-state="checked"] {
+    background: #9ee2b8;
+    color: #1f5135;
+    box-shadow:
+      3px 4px 8px rgb(60 160 100 / 0.35),
+      inset -2px -3px 5px rgb(40 120 80 / 0.3),
+      inset 2px 3px 5px rgb(255 255 255 / 0.7);
+  }
+
+  [data-slot="demo-nav-item"][aria-current="page"] {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow:
+      4px 6px 12px rgb(150 110 200 / 0.3),
+      inset 2px 3px 5px rgb(255 255 255 / 0.9);
   }
 }

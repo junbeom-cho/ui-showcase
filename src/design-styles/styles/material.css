@@ -40,7 +40,9 @@
   [data-slot="card"],
   [data-slot="demo-topbar"],
   [data-slot="demo-sidebar"],
-  [data-slot="app-surface"] {
+  [data-slot="app-surface"],
+  [data-slot="dialog-content"],
+  [data-slot="dropdown-menu-content"] {
     background: #fffbfe;
     color: #1d1b20;
     border-radius: 16px;
@@ -236,5 +238,80 @@
 
   [data-slot="button"][data-variant="destructive"]:active {
     background-color: #d8615a;
+  }
+
+  /* pop-ups, tabs, checkbox and the current menu item (D-019) */
+  /* M3 dialog: surface container high, 28dp corners, level 3 */
+  [data-slot="dialog-content"] {
+    background: #ece6f0;
+    border-radius: 28px;
+    box-shadow:
+      0 4px 4px rgb(0 0 0 / 0.3),
+      0 8px 12px 6px rgb(0 0 0 / 0.15);
+  }
+
+  [data-slot="dialog-overlay"] {
+    background: rgb(0 0 0 / 0.32);
+    backdrop-filter: none;
+  }
+
+  [data-slot="dialog-footer"] {
+    background: transparent;
+    border: none;
+  }
+
+  /* M3 menu: surface container, small corners, level 2 */
+  [data-slot="dropdown-menu-content"] {
+    background: #f3edf7;
+    border-radius: 4px;
+    padding: 8px 0;
+  }
+
+  [data-slot="dropdown-menu-item"] {
+    border-radius: 0;
+    padding: 10px 12px;
+  }
+
+  [data-slot="dropdown-menu-item"]:focus {
+    background: rgb(29 27 32 / 0.08);
+  }
+
+  /* M3 primary tabs: text on the surface with an indicator line under the chosen one */
+  [data-slot="tabs-list"] {
+    background: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid #cac4d0;
+    padding: 0;
+    height: 40px;
+  }
+
+  [data-slot="tabs-trigger"] {
+    border-radius: 0;
+    color: #49454f;
+    padding-inline: 12px;
+  }
+
+  [data-slot="tabs-trigger"][data-state="active"] {
+    background: transparent;
+    color: #6750a4;
+    box-shadow: inset 0 -3px 0 #6750a4;
+  }
+
+  [data-slot="checkbox"] {
+    border: 2px solid #49454f;
+    border-radius: 2px;
+  }
+
+  [data-slot="checkbox"][data-state="checked"] {
+    background: #6750a4;
+    border-color: #6750a4;
+    color: #ffffff;
+  }
+
+  /* M3 navigation drawer: the active item sits in a tonal pill */
+  [data-slot="demo-nav-item"][aria-current="page"] {
+    background: #e8def8;
+    color: #1d192b;
+    border-radius: 999px;
   }
 }
