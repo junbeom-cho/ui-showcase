@@ -6,8 +6,8 @@ import { entries } from './registry'
 const ids = () => entries.map((e) => e.id)
 const byId = (id: string) => entries.find((e) => e.id === id)!
 
-it('has all 21 components with unique kebab-case ids and non-empty text', () => {
-  expect(entries).toHaveLength(21)
+it('has all 29 components with unique kebab-case ids and non-empty text', () => {
+  expect(entries).toHaveLength(29)
   expect(new Set(ids()).size).toBe(entries.length)
   for (const e of entries) {
     expect(e.id).toMatch(/^[a-z]+(-[a-z]+)*$/)
@@ -85,6 +85,27 @@ it('shows the date picker in every format, after its day states', () => {
     '체크인·체크아웃',
     '반복 설정',
   ])
+})
+
+it('shows the same places in every list format, after the row states', () => {
+  const lists = byId('list-views')
+  expect(lists.category).toBe('display')
+  expect(lists.examples.map((x) => x.title)).toEqual([
+    '상태 모음',
+    '리스트',
+    '그리드',
+    '카드',
+    '캐러셀',
+    '테이블',
+    '타임라인',
+    '아코디언',
+    '메이슨리',
+    '무한 스크롤',
+  ])
+})
+
+it.each(['Masonry', 'Carousel', 'Timeline', 'Infinite scroll', '목록'])('finds the list formats as %s', (query) => {
+  expect(filterEntries(entries, query).map((e) => e.id)).toContain('list-views')
 })
 
 it.each([
