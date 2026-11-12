@@ -1,4 +1,15 @@
-import { parseRoute, styleHref } from './route'
+import { animationHref, parseRoute, styleHref } from './route'
+
+it('reads the animation index and pages', () => {
+  expect(parseRoute('#/animations')).toEqual({ page: 'animations' })
+  expect(parseRoute('#/animation/metaballs')).toEqual({ page: 'animation', id: 'metaballs' })
+  expect(parseRoute('#/animation/clay-3d/')).toEqual({ page: 'animation', id: 'clay-3d' })
+})
+
+it('builds animation links', () => {
+  expect(animationHref(null)).toBe('#/animations')
+  expect(animationHref('metaballs')).toBe('#/animation/metaballs')
+})
 
 it('reads the design-style index and pages', () => {
   expect(parseRoute('#/styles')).toEqual({ page: 'styles' })

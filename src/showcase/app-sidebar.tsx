@@ -10,22 +10,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { filterAnimations } from '@/animations/filter-animations'
+import type { AnimationStyle } from '@/animations/types'
 import { filterStyles } from '@/design-styles/filter-styles'
 import type { DesignStyle } from '@/design-styles/types'
 import { cn } from '@/lib/utils'
 import { groupByCategory } from './categories'
 import { filterEntries } from './filter-entries'
-import { hrefFor, styleHref, type Route } from './route'
+import { animationHref, hrefFor, styleHref, type Route } from './route'
 import type { ShowcaseEntry } from './types'
 
-export type Section = 'components' | 'styles'
+export type Section = 'components' | 'styles' | 'animations'
 
-/** The top-level menu a route belongs to (D-015). */
+/** The top-level menu a route belongs to (D-015, D-021). */
 export function sectionOf(route: Route): Section {
-  return route.page === 'styles' || route.page === 'style' ? 'styles' : 'components'
+  if (route.page === 'styles' || route.page === 'style') return 'styles'
+  if (route.page === 'animations' || route.page === 'animation') return 'animations'
+  return 'components'
 }
 
-type SectionProps = { entries: ShowcaseEntry[]; styles: DesignStyle[]; route: Route }
+type SectionProps = { entries: ShowcaseEntry[]; styles: DesignStyle[]; animations: AnimationStyle[]; route: Route }
 
 function NavLink({
   href,
@@ -151,21 +155,64 @@ export function StyleNav({ styles, route, onNavigate }: {
   )
 }
 
-function SectionNav({ entries, styles, route, onNavigate }: SectionProps & { onNavigate?: () => void }) {
-  return sectionOf(route) === 'styles' ? (
-    <StyleNav styles={styles} route={route} onNavigate={onNavigate} />
-  ) : (
-    <ComponentNav entries={entries} route={route} onNavigate={onNavigate} />
+export function AnimationNav({ animations, route, onNavigate }: {
+  animations: AnimationStyle[]
+  route: Route
+  onNavigate?: () => void
+}) {
+  const [query, setQuery] = useState('')
+  const searching = query.trim() !== ''
+  const matching = filterAnimations(animations, query)
+
+  return (
+    <div className="flex flex-col gap-5">
+      <SearchBox label="애니메이션 검색" placeholder="한국어·영어 이름으로 찾기" value={query} onChange={setQuery} />
+      <nav aria-label="애니메이션 목록" className="flex flex-col gap-1">
+        {!searching && (
+          <NavLink href={animationHref(null)} current={route.page === 'animations'} onNavigate={onNavigate}>
+            전체 보기
+          </NavLink>
+        )}
+        <ul className="mt-2 border-l border-rule">
+          {matching.map((animation) => (
+            <li key={animation.id} className="-ml-px">
+              <NavLink
+                href={animationHref(animation.id)}
+                current={route.page === 'animation' && route.id === animation.id}
+                onNavigate={onNavigate}
+              >
+                {animation.name}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+        {matching.length === 0 && (
+          <p className="px-3 text-sm text-ink-muted">'{query}'와 일치하는 애니메이션이 없습니다.</p>
+        )}
+      </nav>
+    </div>
   )
 }
 
-const SECTIONS: { id: Section; label: string; href: string }[] = [
-  { id: 'components', label: 'UI 컴포넌트', href: hrefFor(null) },
-  { id: 'styles', label: '스타일', href: styleHref(null) },
+function SectionNav({ entries, styles, animations, route, onNavigate }: SectionProps & { onNavigate?: () => void }) {
+  switch (sectionOf(route)) {
+    case 'styles':
+      return <StyleNav styles={styles} route={route} onNavigate={onNavigate} />
+    case 'animations':
+      return <AnimationNav animations={animations} route={route} onNavigate={onNavigate} />
+    default:
+      return <ComponentNav entries={entries} route={route} onNavigate={onNavigate} />
+  }
+}
+
+const SECTIONS: { id: Section; label: string; href: string; listTitle: string }[] = [
+  { id: 'components', label: 'UI 컴포넌트', href: hrefFor(null), listTitle: '컴포넌트 목록' },
+  { id: 'styles', label: '스타일', href: styleHref(null), listTitle: '스타일 목록' },
+  { id: 'animations', label: '애니메이션', href: animationHref(null), listTitle: '애니메이션 목록' },
 ]
 
-/** Full-width top bar: brand, the two top-level menus, and (on phones) the section list in a Sheet. */
-export function AppHeader({ entries, styles, route }: SectionProps) {
+/** Full-width top bar: brand, the three top-level menus, and (on phones) the section list in a Sheet. */
+export function AppHeader({ entries, styles, animations, route }: SectionProps) {
   const [open, setOpen] = useState(false)
   const section = sectionOf(route)
 
@@ -203,10 +250,16 @@ export function AppHeader({ entries, styles, route }: SectionProps) {
         </SheetTrigger>
         <SheetContent side="left" className="w-72 overflow-y-auto bg-paper p-5">
           <SheetHeader className="p-0">
-            <SheetTitle>{section === 'styles' ? '스타일 목록' : '컴포넌트 목록'}</SheetTitle>
+            <SheetTitle>{SECTIONS.find((s) => s.id === section)!.listTitle}</SheetTitle>
             <SheetDescription className="sr-only">목록과 검색</SheetDescription>
           </SheetHeader>
-          <SectionNav entries={entries} styles={styles} route={route} onNavigate={() => setOpen(false)} />
+          <SectionNav
+            entries={entries}
+            styles={styles}
+            animations={animations}
+            route={route}
+            onNavigate={() => setOpen(false)}
+          />
         </SheetContent>
       </Sheet>
     </header>

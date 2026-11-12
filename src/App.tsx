@@ -1,3 +1,6 @@
+import { AnimationPage } from '@/animations/animation-page'
+import { AnimationsIndexPage } from '@/animations/animations-index-page'
+import { animations } from '@/animations/registry'
 import { designStyles } from '@/design-styles/registry'
 import { usePageStyle } from '@/design-styles/theme'
 import { StylePage } from '@/design-styles/style-page'
@@ -7,7 +10,7 @@ import { AppHeader, AppSidebar } from '@/showcase/app-sidebar'
 import { ComponentPage } from '@/showcase/component-page'
 import { OverviewPage } from '@/showcase/overview-page'
 import { entries } from '@/showcase/registry'
-import { hrefFor, styleHref, useRoute } from '@/showcase/route'
+import { animationHref, hrefFor, styleHref, useRoute } from '@/showcase/route'
 
 function NotFound({ message, href, back }: { message: string; href: string; back: string }) {
   return (
@@ -55,6 +58,23 @@ function usePage() {
         ),
       }
     }
+    case 'animations':
+      return { route, content: <AnimationsIndexPage animations={animations} /> }
+    case 'animation': {
+      const animation = animations.find((a) => a.id === route.id)
+      return {
+        route,
+        content: animation ? (
+          <AnimationPage key={animation.id} animation={animation} animations={animations} />
+        ) : (
+          <NotFound
+            message={`'${route.id}' 애니메이션을 찾을 수 없습니다.`}
+            href={animationHref(null)}
+            back="애니메이션 스타일로 돌아가기"
+          />
+        ),
+      }
+    }
   }
 }
 
@@ -66,14 +86,15 @@ function App() {
   // A style page is its own finished page: the whole screen wears the style (D-018).
   usePageStyle(route.page === 'style' && styleIds.includes(route.id) ? route.id : null)
 
-  // A style page is a whole dashboard, so it gets the full width (D-016).
-  const wide = route.page === 'style'
+  // A style page is a whole dashboard and an animation page a big stage, so both get the full width (D-016, D-021).
+  const wide = route.page === 'style' || route.page === 'animation'
+  const lists = { entries, styles: designStyles, animations }
 
   return (
     <div className="flex min-h-svh flex-col">
-      <AppHeader entries={entries} styles={designStyles} route={route} />
+      <AppHeader {...lists} route={route} />
       <div className="flex flex-1">
-        <AppSidebar entries={entries} styles={designStyles} route={route} />
+        <AppSidebar {...lists} route={route} />
         <main
           className={cn(
             'mx-auto w-full min-w-0 px-4 py-10 sm:px-8 lg:py-14',

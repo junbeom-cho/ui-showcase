@@ -1,39 +1,69 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { testAnimations } from '@/animations/test-animations'
 import { designStyles } from '@/design-styles/registry'
-import { AppHeader, ComponentNav, StyleNav, sectionOf } from './app-sidebar'
+import { AnimationNav, AppHeader, ComponentNav, StyleNav, sectionOf } from './app-sidebar'
 import { items } from './test-entries'
 
 const user = userEvent.setup()
 const overview = { page: 'overview' } as const
+const lists = { entries: items, styles: designStyles, animations: testAnimations }
 
 describe('sectionOf', () => {
-  it('maps routes to the two top-level sections', () => {
+  it('maps routes to the three top-level sections', () => {
     expect(sectionOf({ page: 'overview' })).toBe('components')
     expect(sectionOf({ page: 'component', id: 'badge' })).toBe('components')
     expect(sectionOf({ page: 'styles' })).toBe('styles')
     expect(sectionOf({ page: 'style', id: 'flat' })).toBe('styles')
+    expect(sectionOf({ page: 'animations' })).toBe('animations')
+    expect(sectionOf({ page: 'animation', id: 'metaballs' })).toBe('animations')
   })
 })
 
 describe('AppHeader', () => {
   const tabs = () => screen.getByRole('navigation', { name: '대메뉴' })
 
-  it('offers the two sections as top-level links', () => {
-    render(<AppHeader entries={items} styles={designStyles} route={overview} />)
+  it('offers the three sections as top-level links', () => {
+    render(<AppHeader {...lists} route={overview} />)
     expect(within(tabs()).getByRole('link', { name: 'UI 컴포넌트' })).toHaveAttribute('href', '#/')
     expect(within(tabs()).getByRole('link', { name: '스타일' })).toHaveAttribute('href', '#/styles')
+    expect(within(tabs()).getByRole('link', { name: '애니메이션' })).toHaveAttribute('href', '#/animations')
   })
 
   it('marks the section of the current page', () => {
-    const { unmount } = render(
-      <AppHeader entries={items} styles={designStyles} route={{ page: 'component', id: 'badge' }} />,
-    )
+    const { unmount } = render(<AppHeader {...lists} route={{ page: 'component', id: 'badge' }} />)
     expect(within(tabs()).getByRole('link', { name: 'UI 컴포넌트' })).toHaveAttribute('aria-current', 'page')
     expect(within(tabs()).getByRole('link', { name: '스타일' })).not.toHaveAttribute('aria-current')
     unmount()
-    render(<AppHeader entries={items} styles={designStyles} route={{ page: 'style', id: 'flat' }} />)
+    const again = render(<AppHeader {...lists} route={{ page: 'style', id: 'flat' }} />)
     expect(within(tabs()).getByRole('link', { name: '스타일' })).toHaveAttribute('aria-current', 'page')
+    again.unmount()
+    render(<AppHeader {...lists} route={{ page: 'animation', id: 'test-wave' }} />)
+    expect(within(tabs()).getByRole('link', { name: '애니메이션' })).toHaveAttribute('aria-current', 'page')
+  })
+})
+
+describe('AnimationNav', () => {
+  const nav = () => screen.getByRole('navigation', { name: '애니메이션 목록' })
+  const search = () => screen.getByRole('searchbox', { name: '애니메이션 검색' })
+
+  it('lists an overview link and every animation in order, marking the current one', () => {
+    render(<AnimationNav animations={testAnimations} route={{ page: 'animation', id: 'test-dots' }} />)
+    const links = within(nav()).getAllByRole('link')
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      '#/animations',
+      ...testAnimations.map((a) => `#/animation/${a.id}`),
+    ])
+    expect(within(nav()).getByRole('link', { name: '점 무리' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('searches by Korean, English or other names', async () => {
+    render(<AnimationNav animations={testAnimations} route={{ page: 'animations' }} />)
+    await user.type(search(), 'dots')
+    expect(within(nav()).getAllByRole('link').map((a) => a.textContent)).toEqual(['점 무리'])
+    await user.clear(search())
+    await user.type(search(), 'xyz')
+    expect(screen.getByText("'xyz'와 일치하는 애니메이션이 없습니다.")).toBeInTheDocument()
   })
 })
 
