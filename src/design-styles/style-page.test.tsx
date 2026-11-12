@@ -96,6 +96,6 @@ it('shows the browser note only for liquid glass', () => {
   const { unmount } = render(<StylePage style={neu} styles={designStyles} />)
   expect(screen.queryByText('굴절 효과는 Chrome 계열 브라우저에서 가장 잘 보입니다.')).toBeNull()
   unmount()
-  render(<StylePage style={designStyles.at(-1)!} styles={designStyles} />)
+  render(<StylePage style={designStyles.find((s) => s.id === 'liquid-glass')!} styles={designStyles} />)
   expect(screen.getByText('굴절 효과는 Chrome 계열 브라우저에서 가장 잘 보입니다.')).toBeInTheDocument()
 })

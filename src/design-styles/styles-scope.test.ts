@@ -36,8 +36,8 @@ function ruleSelectors(css: string): string[] {
 const styleFiles = Object.entries(files).filter(([path]) => !path.endsWith('/index.css'))
 const idOf = (path: string) => /styles\/(.+)\.css$/.exec(path)![1]
 
-it('has a CSS file for each of the 9 styles', () => {
-  expect(styleFiles).toHaveLength(9)
+it('has a CSS file for each of the 15 styles', () => {
+  expect(styleFiles).toHaveLength(15)
 })
 
 /*

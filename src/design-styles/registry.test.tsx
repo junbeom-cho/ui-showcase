@@ -13,9 +13,16 @@ const ORDER = [
   'neo-brutalism',
   '3d-icons',
   'liquid-glass',
+  // added in D-026
+  'swiss',
+  'editorial',
+  'terminal',
+  'y2k',
+  'memphis',
+  'aurora',
 ]
 
-it('lists the 9 styles in the fixed order', () => {
+it('lists the 15 styles in the fixed order', () => {
   expect(designStyles.map((s) => s.id)).toEqual(ORDER)
 })
 

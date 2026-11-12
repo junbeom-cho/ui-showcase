@@ -7,6 +7,12 @@
 @import "./neo-brutalism.css";
 @import "./3d-icons.css";
 @import "./liquid-glass.css";
+@import "./swiss.css";
+@import "./editorial.css";
+@import "./terminal.css";
+@import "./y2k.css";
+@import "./memphis.css";
+@import "./aurora.css";
 
 /* Rules every style shares (D-019) */
 @scope ([data-design-style]) to ([data-design-style]) {
