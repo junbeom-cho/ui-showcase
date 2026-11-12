@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Pagination,
@@ -10,7 +10,40 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 import { cn } from '@/lib/utils'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function One({ children }: { children: ReactNode }) {
+  return (
+    <Pagination className="mx-0 w-auto">
+      <PaginationContent>
+        <PaginationItem>{children}</PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '페이지 번호', node: <One><PaginationLink href="#">3</PaginationLink></One> },
+        { label: '호버', node: <One><PaginationLink href="#" data-demo-state="hover">3</PaginationLink></One> },
+        { label: '현재 페이지', node: <One><PaginationLink href="#" isActive>3</PaginationLink></One> },
+        { label: '포커스', node: <One><PaginationLink href="#" data-demo-state="focus">3</PaginationLink></One> },
+        {
+          label: '비활성 (첫 페이지의 이전)',
+          node: (
+            <One>
+              <PaginationPrevious href="#" aria-disabled className="pointer-events-none opacity-50" />
+            </One>
+          ),
+        },
+        { label: '줄임표', node: <One><PaginationEllipsis /></One> },
+      ]}
+    />
+  )
+}
 
 function PaginationPreview() {
   return (
@@ -159,6 +192,11 @@ export const paginationEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '번호 하나가 가질 수 있는 상태입니다. 지금 페이지는 테두리로 구분하고, 갈 수 없는 방향은 흐리게 둡니다.',
+      Demo: States,
+    },
     {
       title: '페이지 넘기기',
       description: '번호나 이전·다음을 눌러 보세요. 처음과 끝에서는 해당 방향 버튼이 비활성화됩니다.',

@@ -2,7 +2,32 @@ import { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '깜빡임 (기본)', node: <Skeleton className="h-4 w-28" /> },
+        { label: '멈춤', node: <Skeleton className="h-4 w-28 animate-none" /> },
+        { label: '원 (프로필)', node: <Skeleton className="size-10 rounded-full" /> },
+        {
+          label: '글 여러 줄',
+          node: (
+            <div className="flex w-28 flex-col gap-1.5">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-4/5" />
+              <Skeleton className="h-3 w-3/5" />
+            </div>
+          ),
+        },
+        { label: '이미지 자리', node: <Skeleton className="aspect-video w-28 rounded-md" /> },
+        { label: '버튼 자리', node: <Skeleton className="h-8 w-20 rounded-lg" /> },
+      ]}
+    />
+  )
+}
 
 function SkeletonPreview() {
   return (
@@ -115,6 +140,11 @@ export const skeletonEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '깜빡이는 기본 모습과 멈춘 모습, 그리고 무엇의 자리인지에 따라 달라지는 모양입니다.',
+      Demo: States,
+    },
     {
       title: '불러온 뒤 내용으로 바꾸기',
       description: '1.8초 동안 스켈레톤을 보여준 뒤 실제 프로필로 바뀝니다. 다시 불러와 보세요.',

@@ -11,6 +11,49 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
+ * State galleries (D-019) pin a look with data-demo-state="hover|active|focus",
+ * so these built-in variants also answer to that attribute. Real pointer and
+ * keyboard states behave exactly as before.
+ */
+@custom-variant hover {
+  &:hover {
+    @media (hover: hover) {
+      @slot;
+    }
+  }
+  &[data-demo-state~="hover"] {
+    @slot;
+  }
+}
+
+@custom-variant active {
+  &:active {
+    @slot;
+  }
+  &[data-demo-state~="active"] {
+    @slot;
+  }
+}
+
+@custom-variant focus {
+  &:focus {
+    @slot;
+  }
+  &[data-demo-state~="focus"] {
+    @slot;
+  }
+}
+
+@custom-variant focus-visible {
+  &:focus-visible {
+    @slot;
+  }
+  &[data-demo-state~="focus"] {
+    @slot;
+  }
+}
+
+/*
  * Drawing-sheet tokens (D-011). Components themselves keep the neutral shadcn
  * palette; these colors belong to the annotation layer and the app chrome.
  */
@@ -23,6 +66,16 @@
     --color-rule: var(--rule);
     --color-gridline: var(--gridline);
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --animate-indeterminate: indeterminate 1.4s ease-in-out infinite;
+
+    @keyframes indeterminate {
+      from {
+        left: -40%;
+      }
+      to {
+        left: 100%;
+      }
+    }
 }
 
 @theme inline {

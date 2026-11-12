@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 import { CheckIcon, MoreHorizontalIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,70 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function Mini({ className, children, ...props }: ComponentProps<typeof Card>) {
+  return (
+    <Card size="sm" className={cn('w-full max-w-44 transition-shadow', className)} {...props}>
+      {children ?? (
+        <CardHeader>
+          <CardTitle>프로젝트</CardTitle>
+          <CardDescription>2일 전 수정</CardDescription>
+        </CardHeader>
+      )}
+    </Card>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '기본', node: <Mini /> },
+        { label: '호버 (떠오름)', node: <Mini data-demo-state="hover" className="hover:shadow-lg hover:ring-foreground/20" /> },
+        {
+          label: '선택됨',
+          node: (
+            <Mini className="ring-2 ring-primary">
+              <CardHeader>
+                <CardTitle>프로젝트</CardTitle>
+                <CardDescription>2일 전 수정</CardDescription>
+                <CardAction>
+                  <CheckIcon className="size-4" />
+                </CardAction>
+              </CardHeader>
+            </Mini>
+          ),
+        },
+        { label: '비활성', node: <Mini aria-disabled className="opacity-50" /> },
+        {
+          label: '불러오는 중',
+          node: (
+            <Mini aria-busy>
+              <CardHeader>
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-3 w-14" />
+              </CardHeader>
+            </Mini>
+          ),
+        },
+        {
+          label: '오류',
+          node: (
+            <Mini className="ring-destructive/40">
+              <CardHeader>
+                <CardTitle className="text-destructive">불러오지 못함</CardTitle>
+                <CardDescription>새로고침해 보세요.</CardDescription>
+              </CardHeader>
+            </Mini>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function CardPreview() {
   return (
@@ -204,6 +267,11 @@ export const cardEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '눌러서 고르는 카드라면 호버·선택됨·비활성이, 데이터를 담는 카드라면 불러오는 중·오류 상태가 생깁니다.',
+      Demo: States,
+    },
     {
       title: '폼을 담은 카드',
       description: '로그인처럼 짧은 입력을 카드 하나에 담습니다. 로그인을 누르면 카드 안의 내용만 바뀝니다.',

@@ -202,6 +202,61 @@ function NestedSidebar() {
   )
 }
 
+/** One sidebar whose menu items are named after the state each one shows. */
+function States() {
+  return (
+    <Frame width="12rem" className="h-72">
+      <Sidebar collapsible="none">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>메뉴 항목의 상태</SidebarGroupLabel>
+            <SidebarMenu aria-label="상태 모음">
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <HomeIcon />
+                  기본
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton data-demo-state="hover">
+                  <SearchIcon />
+                  호버
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton isActive>
+                  <InboxIcon />
+                  선택됨 (지금 위치)
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton data-demo-state="focus">
+                  <FileTextIcon />
+                  포커스
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton disabled>
+                  <SettingsIcon />
+                  비활성
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <InboxIcon />
+                  배지 포함
+                </SidebarMenuButton>
+                <SidebarMenuBadge>12</SidebarMenuBadge>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <div className="flex-1 p-4 text-xs text-muted-foreground">본문 영역</div>
+    </Frame>
+  )
+}
+
 export const sidebarEntry: ShowcaseEntry = {
   id: 'sidebar',
   name: 'Sidebar',
@@ -221,6 +276,11 @@ export const sidebarEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '메뉴 항목 하나가 가질 수 있는 상태입니다. 항목 이름이 곧 그 항목이 보여주는 상태입니다.',
+      Demo: States,
+    },
     {
       title: '현재 위치 표시',
       description: '지금 보고 있는 메뉴를 강조합니다. 메뉴를 눌러 오른쪽 내용이 바뀌는 것을 확인하세요.',

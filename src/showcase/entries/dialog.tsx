@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { XIcon } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
+import { Loader2Icon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,7 +13,84 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+/** Static drawing of an open dialog box, so several states fit side by side. */
+function Box({ title, description, children }: { title: string; description: string; children: ReactNode }) {
+  return (
+    <div className="grid w-full max-w-72 gap-3 rounded-xl bg-background p-4 text-left text-sm shadow-sm ring-1 ring-foreground/10">
+      <div className="grid gap-1">
+        <p className="font-medium">{title}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      wide
+      items={[
+        {
+          label: '기본',
+          node: (
+            <Box title="이름 바꾸기" description="다른 사람에게 보이는 이름입니다.">
+              <Input aria-label="표시 이름" defaultValue="김하늘" />
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline">취소</Button>
+                <Button size="sm">저장</Button>
+              </div>
+            </Box>
+          ),
+        },
+        {
+          label: '위험한 동작 확인',
+          node: (
+            <Box title="정말 삭제할까요?" description="삭제한 사진은 되돌릴 수 없습니다.">
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline">취소</Button>
+                <Button size="sm" variant="destructive">삭제</Button>
+              </div>
+            </Box>
+          ),
+        },
+        {
+          label: '입력 오류',
+          node: (
+            <Box title="이름 바꾸기" description="다른 사람에게 보이는 이름입니다.">
+              <div className="grid gap-1.5">
+                <Input aria-label="표시 이름" aria-invalid defaultValue="" placeholder="표시 이름" />
+                <p className="text-xs text-destructive">이름을 입력하세요.</p>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline">취소</Button>
+                <Button size="sm">저장</Button>
+              </div>
+            </Box>
+          ),
+        },
+        {
+          label: '저장 중',
+          node: (
+            <Box title="이름 바꾸기" description="다른 사람에게 보이는 이름입니다.">
+              <Input aria-label="표시 이름" defaultValue="김하늘" disabled />
+              <div className="flex justify-end gap-2">
+                <Button size="sm" variant="outline" disabled>취소</Button>
+                <Button size="sm" disabled>
+                  <Loader2Icon className="motion-safe:animate-spin" data-icon="inline-start" />
+                  저장 중
+                </Button>
+              </div>
+            </Box>
+          ),
+        },
+      ]}
+    />
+  )
+}
 import { MockScreen } from './mock-screen'
 
 function DialogPreview() {
@@ -208,6 +285,11 @@ export const dialogEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '열린 창이 거치는 상태를 페이지 안에 그대로 그렸습니다. 실제 창은 아래 예시에서 열어 보세요.',
+      Demo: States,
+    },
     {
       title: '확인 받기',
       description: '되돌릴 수 없는 동작 전에 한 번 더 묻습니다. 바깥을 누르거나 Esc를 눌러도 닫힙니다.',

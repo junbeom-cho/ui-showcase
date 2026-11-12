@@ -1,7 +1,36 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function Cells({ className, count = 6, span }: { className: string; count?: number; span?: boolean }) {
+  return (
+    <div className={cn('grid w-full max-w-40', className)}>
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className={cn('h-5 rounded-sm bg-muted', span && i === 0 && 'col-span-2 bg-primary/20')}
+        />
+      ))}
+    </div>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '2열', node: <Cells className="grid-cols-2 gap-1.5" /> },
+        { label: '3열', node: <Cells className="grid-cols-3 gap-1.5" /> },
+        { label: '4열', node: <Cells className="grid-cols-4 gap-1.5" count={8} /> },
+        { label: '좁은 간격', node: <Cells className="grid-cols-3 gap-0.5" /> },
+        { label: '넓은 간격', node: <Cells className="grid-cols-3 gap-3" /> },
+        { label: '칸 합치기', node: <Cells className="grid-cols-3 gap-1.5" count={5} span /> },
+      ]}
+    />
+  )
+}
 
 const cell = 'flex items-center justify-center rounded-md bg-muted text-xs text-muted-foreground'
 
@@ -149,6 +178,11 @@ export const gridEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '그리드는 상태 대신 열 개수, 칸 사이 간격, 칸 합치기로 모양이 달라집니다.',
+      Demo: States,
+    },
     {
       title: '열 개수 바꾸기',
       description: '같은 항목도 열 개수에 따라 줄바꿈 위치가 달라집니다.',

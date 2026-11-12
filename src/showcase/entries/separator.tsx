@@ -1,7 +1,50 @@
 import { BoldIcon, ItalicIcon, LinkIcon, UnderlineIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '가로', node: <Separator className="w-28" /> },
+        {
+          label: '세로',
+          node: (
+            <div className="flex h-6 items-center gap-3 text-xs">
+              <span>홈</span>
+              <Separator orientation="vertical" />
+              <span>문서</span>
+            </div>
+          ),
+        },
+        { label: '점선', node: <Separator className="w-28 border-t border-dashed border-border bg-transparent" /> },
+        { label: '굵게', node: <Separator className="w-28 data-horizontal:h-[3px]" /> },
+        {
+          label: '글자 포함',
+          node: (
+            <div className="flex w-32 items-center gap-2 text-xs text-muted-foreground">
+              <Separator className="flex-1" />
+              또는
+              <Separator className="flex-1" />
+            </div>
+          ),
+        },
+        {
+          label: '여백을 둔 구분',
+          node: (
+            <div className="w-28 text-xs">
+              <p>위</p>
+              <Separator className="my-3" />
+              <p>아래</p>
+            </div>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function SeparatorPreview() {
   return (
@@ -101,6 +144,11 @@ export const separatorEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '방향(가로·세로)과 선 모양, 글자를 끼워 넣는 경우입니다.',
+      Demo: States,
+    },
     {
       title: '목록 사이 구분',
       description: '목록 항목 사이에 선을 넣어 한 줄씩 끊어 읽히게 합니다.',

@@ -9,7 +9,63 @@ import {
 } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function WithStatus({ dot }: { dot: string }) {
+  return (
+    <Avatar size="lg">
+      <AvatarImage src={avatarSrc} alt="" />
+      <AvatarFallback>AB</AvatarFallback>
+      <AvatarBadge className={dot} />
+    </Avatar>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        {
+          label: '이미지',
+          node: (
+            <Avatar size="lg">
+              <AvatarImage src={avatarSrc} alt="" />
+              <AvatarFallback>AB</AvatarFallback>
+            </Avatar>
+          ),
+        },
+        {
+          label: '대체 글자',
+          node: (
+            <Avatar size="lg">
+              <AvatarFallback>CD</AvatarFallback>
+            </Avatar>
+          ),
+        },
+        { label: '불러오는 중', node: <Skeleton className="size-10 rounded-full" /> },
+        { label: '온라인', node: <WithStatus dot="bg-emerald-500" /> },
+        { label: '자리 비움', node: <WithStatus dot="bg-amber-400" /> },
+        { label: '다른 용무 중', node: <WithStatus dot="bg-red-500" /> },
+        { label: '오프라인', node: <WithStatus dot="bg-neutral-400" /> },
+        {
+          label: '여러 명',
+          node: (
+            <AvatarGroup>
+              {['가', '나', '다'].map((n) => (
+                <Avatar key={n}>
+                  <AvatarFallback>{n}</AvatarFallback>
+                </Avatar>
+              ))}
+              <AvatarGroupCount>+4</AvatarGroupCount>
+            </AvatarGroup>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 const avatarSrc = `${import.meta.env.BASE_URL}avatar.svg`
 
@@ -166,6 +222,11 @@ export const avatarEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '이미지가 있을 때와 없을 때, 불러오는 중, 그리고 오른쪽 아래 점으로 나타내는 접속 상태입니다.',
+      Demo: States,
+    },
     {
       title: '이미지와 대체 글자',
       description: '이미지를 불러오지 못하면 자동으로 이니셜을 보여줍니다. 가운데는 일부러 깨진 주소를 넣었습니다.',

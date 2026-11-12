@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, type ReactNode } from 'react'
 import { SlashIcon } from 'lucide-react'
 import {
   Breadcrumb,
@@ -15,7 +15,101 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function Crumbs({ children }: { children: ReactNode }) {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>{children}</BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        {
+          label: '링크',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">문서</BreadcrumbLink>
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+        {
+          label: '링크 호버',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#" data-demo-state="hover">
+                  문서
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+        {
+          label: '현재 페이지',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbPage>컴포넌트</BreadcrumbPage>
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+        {
+          label: '구분 기호',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">홈</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">문서</BreadcrumbLink>
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+        {
+          label: '줄임표',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">홈</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbEllipsis />
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+        {
+          label: '다른 구분 기호',
+          node: (
+            <Crumbs>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="#">회사</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>
+                <SlashIcon />
+              </BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage>팀</BreadcrumbPage>
+              </BreadcrumbItem>
+            </Crumbs>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function BreadcrumbPreview() {
   return (
@@ -173,6 +267,11 @@ export const breadcrumbEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '경로를 이루는 조각마다 모양이 다릅니다. 상위 경로는 링크, 지금 페이지는 링크가 아닌 진한 글자입니다.',
+      Demo: States,
+    },
     {
       title: '상위 경로로 이동',
       description: '폴더 경로에서 상위 항목을 누르면 그 위치로 올라갑니다.',

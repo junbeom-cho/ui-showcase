@@ -1,6 +1,32 @@
 import { CreditCardIcon, PackageIcon, RotateCcwIcon } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function One({ open = false, disabled = false, demoState }: { open?: boolean; disabled?: boolean; demoState?: string }) {
+  return (
+    <Accordion type="single" collapsible defaultValue={open ? 'a' : undefined} className="w-full max-w-48">
+      <AccordionItem value="a" disabled={disabled}>
+        <AccordionTrigger data-demo-state={demoState}>배송 안내</AccordionTrigger>
+        <AccordionContent>2~3일 걸립니다.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '닫힘', node: <One /> },
+        { label: '열림', node: <One open /> },
+        { label: '호버', node: <One demoState="hover" /> },
+        { label: '포커스', node: <One demoState="focus" /> },
+        { label: '비활성', node: <One disabled /> },
+      ]}
+    />
+  )
+}
 
 function AccordionPreview() {
   return (
@@ -105,6 +131,11 @@ export const accordionEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '항목 하나가 닫히고 열리는 모습과, 호버하면 제목에 밑줄이 생기는 모습입니다.',
+      Demo: States,
+    },
     {
       title: '하나만 열기',
       description: '자주 묻는 질문처럼 하나를 열면 나머지는 저절로 닫힙니다 (type="single").',

@@ -1,7 +1,33 @@
 import { useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '꺼짐', node: <Checkbox aria-label="꺼짐" /> },
+        { label: '켜짐', node: <Checkbox aria-label="켜짐" defaultChecked /> },
+        { label: '일부 선택', node: <Checkbox aria-label="일부 선택" checked="indeterminate" /> },
+        { label: '포커스', node: <Checkbox aria-label="포커스" data-demo-state="focus" /> },
+        { label: '비활성', node: <Checkbox aria-label="비활성" disabled /> },
+        { label: '비활성 (켜짐)', node: <Checkbox aria-label="비활성 켜짐" disabled defaultChecked /> },
+        { label: '오류', node: <Checkbox aria-label="오류" aria-invalid /> },
+        {
+          label: '라벨과 함께',
+          node: (
+            <div className="flex items-center gap-2">
+              <Checkbox id="checkbox-state-label" defaultChecked />
+              <Label htmlFor="checkbox-state-label">알림 받기</Label>
+            </div>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function CheckboxPreview() {
   return (
@@ -128,6 +154,11 @@ export const checkboxEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '켜짐·꺼짐 말고도 일부 선택, 포커스, 비활성, 오류 상태가 있습니다.',
+      Demo: States,
+    },
     {
       title: '설명이 붙은 체크박스',
       description: '선택의 결과를 한 줄 더 설명해야 할 때 라벨 아래에 흐린 글을 둡니다.',

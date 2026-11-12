@@ -13,7 +13,43 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+const panelPosition = {
+  right: 'inset-y-0 right-0 w-28 border-l',
+  left: 'inset-y-0 left-0 w-28 border-r',
+  bottom: 'inset-x-0 bottom-0 h-20 rounded-t-xl border-t',
+  top: 'inset-x-0 top-0 h-20 rounded-b-xl border-b',
+} as const
+
+/** Static drawing of an open sheet on a miniature screen. */
+function Drawn({ side, title }: { side: keyof typeof panelPosition; title: string }) {
+  return (
+    <MockScreen>
+      <div className="absolute inset-0 bg-black/20" />
+      <div className={`absolute flex flex-col gap-1 bg-background p-3 text-[11px] ${panelPosition[side]}`}>
+        <p className="font-medium">{title}</p>
+        <div className="h-1.5 w-4/5 rounded bg-muted" />
+        <div className="h-1.5 w-3/5 rounded bg-muted" />
+      </div>
+    </MockScreen>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      wide
+      items={[
+        { label: '오른쪽 (필터·상세)', node: <Drawn side="right" title="필터" /> },
+        { label: '왼쪽 (모바일 메뉴)', node: <Drawn side="left" title="메뉴" /> },
+        { label: '아래 (바텀시트)', node: <Drawn side="bottom" title="공유하기" /> },
+        { label: '위 (알림 띠)', node: <Drawn side="top" title="새 알림 3개" /> },
+      ]}
+    />
+  )
+}
 import { MockScreen } from './mock-screen'
 
 function SheetPreview() {
@@ -192,6 +228,11 @@ export const sheetEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '나오는 방향에 따라 쓰임이 달라집니다. 아래에서 나오는 것을 흔히 바텀시트라고 부릅니다.',
+      Demo: States,
+    },
     {
       title: '나오는 방향',
       description: '네 방향 어디에서든 꺼낼 수 있습니다. 모바일 메뉴는 왼쪽, 필터는 오른쪽에서 주로 나옵니다.',

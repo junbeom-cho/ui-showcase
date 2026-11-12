@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { ChevronDownIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  CircleIcon,
+  LogOutIcon,
+  SettingsIcon,
+  TrashIcon,
+  UserIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,6 +27,42 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { ShowcaseEntry } from '../types'
+
+const itemClass = 'relative flex items-center gap-1.5 rounded-md py-1 pr-2 pl-7 text-sm'
+
+/** Static drawing of an open menu whose items are named after the state each one shows. */
+function States() {
+  return (
+    <div className="w-60 rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10">
+      <p className="px-2 py-1 text-xs font-medium text-muted-foreground">메뉴 항목의 상태</p>
+      <ul aria-label="상태 모음" className="flex flex-col">
+        <li className={itemClass}>기본</li>
+        <li className={`${itemClass} bg-accent text-accent-foreground`}>강조 (호버·방향키)</li>
+        <li className={`${itemClass} opacity-50`}>비활성</li>
+        <li className={itemClass}>
+          <CheckIcon className="absolute left-2 size-4" />
+          체크됨
+        </li>
+        <li className={itemClass}>
+          <CircleIcon className="absolute left-2.5 size-2 fill-current" />
+          라디오 선택
+        </li>
+        <li className={`${itemClass} text-destructive`}>
+          <TrashIcon className="absolute left-2 size-4" />
+          위험한 동작
+        </li>
+        <li className={itemClass}>
+          단축키
+          <span className="ml-auto text-xs tracking-widest text-muted-foreground">⌘S</span>
+        </li>
+        <li className={itemClass}>
+          하위 메뉴
+          <ChevronRightIcon className="ml-auto size-4" />
+        </li>
+      </ul>
+    </div>
+  )
+}
 
 function DropdownMenuPreview() {
   return (
@@ -202,6 +247,11 @@ export const dropdownMenuEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '메뉴 항목이 가질 수 있는 상태를 열린 메뉴 하나에 모았습니다. 항목 이름이 곧 그 항목의 상태입니다.',
+      Demo: States,
+    },
     {
       title: '계정 메뉴',
       description: '아이콘·단축키·위험 항목을 갖춘 흔한 형태입니다. 항목을 골라 보세요.',

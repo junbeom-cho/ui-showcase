@@ -1,7 +1,67 @@
 import { useState } from 'react'
-import { DownloadIcon, Loader2Icon, PlusIcon, SendIcon, TrashIcon } from 'lucide-react'
+import {
+  AlertCircleIcon,
+  CheckIcon,
+  DownloadIcon,
+  HeartIcon,
+  Loader2Icon,
+  PlusIcon,
+  SendIcon,
+  TrashIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '기본', node: <Button>저장</Button> },
+        { label: '호버', node: <Button data-demo-state="hover">저장</Button> },
+        { label: '눌림', node: <Button data-demo-state="hover active">저장</Button> },
+        { label: '포커스', node: <Button data-demo-state="focus">저장</Button> },
+        { label: '비활성', node: <Button disabled>저장</Button> },
+        {
+          label: '로딩',
+          node: (
+            <Button disabled>
+              <Loader2Icon className="motion-safe:animate-spin" data-icon="inline-start" />
+              저장 중
+            </Button>
+          ),
+        },
+        {
+          label: '성공',
+          node: (
+            <Button className="bg-emerald-600 text-white hover:bg-emerald-600">
+              <CheckIcon data-icon="inline-start" />
+              저장됨
+            </Button>
+          ),
+        },
+        {
+          label: '오류',
+          node: (
+            <Button variant="destructive">
+              <AlertCircleIcon data-icon="inline-start" />
+              다시 시도
+            </Button>
+          ),
+        },
+        {
+          label: '선택됨',
+          node: (
+            <Button variant="outline" aria-pressed className="border-primary bg-primary/10">
+              <HeartIcon data-icon="inline-start" className="fill-current" />
+              좋아요
+            </Button>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function ButtonPreview() {
   return (
@@ -76,7 +136,7 @@ function LoadingButton() {
   )
 }
 
-function States() {
+function DisabledAndDanger() {
   return (
     <div className="flex flex-wrap justify-center gap-2">
       <Button disabled>비활성</Button>
@@ -106,6 +166,11 @@ export const buttonEntry: ShowcaseEntry = {
   },
   examples: [
     {
+      title: '상태 모음',
+      description: '같은 버튼이 놓이는 상태를 나란히 놓았습니다. 호버·눌림·포커스는 마우스나 키보드 없이도 보이도록 고정해 그렸습니다.',
+      Demo: States,
+    },
+    {
       title: '변형 (variant)',
       description: '중요도에 따라 모양을 바꿉니다. 화면에서 가장 중요한 동작 하나에만 default를 씁니다.',
       Demo: Variants,
@@ -123,7 +188,7 @@ export const buttonEntry: ShowcaseEntry = {
     {
       title: '비활성과 위험 동작',
       description: '지금 누를 수 없는 버튼은 흐리게, 되돌릴 수 없는 동작은 빨간색으로 구분합니다.',
-      Demo: States,
+      Demo: DisabledAndDanger,
     },
   ],
 }

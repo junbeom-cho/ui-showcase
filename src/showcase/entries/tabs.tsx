@@ -1,10 +1,47 @@
+import type { ComponentProps } from 'react'
 import { BellIcon, CreditCardIcon, UserIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+/** One tab in its own list, so each cell shows exactly one state. */
+function OneTab({ selected = false, ...props }: { selected?: boolean } & ComponentProps<typeof TabsTrigger>) {
+  return (
+    <Tabs value={selected ? props.value : '__none'}>
+      <TabsList>
+        <TabsTrigger {...props}>알림</TabsTrigger>
+      </TabsList>
+    </Tabs>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '선택됨', node: <OneTab value="a" selected /> },
+        { label: '선택 안 됨', node: <OneTab value="a" /> },
+        { label: '호버', node: <OneTab value="a" data-demo-state="hover" /> },
+        { label: '포커스', node: <OneTab value="a" data-demo-state="focus" /> },
+        { label: '비활성', node: <OneTab value="a" disabled /> },
+        {
+          label: '밑줄형 선택됨',
+          node: (
+            <Tabs value="a">
+              <TabsList variant="line">
+                <TabsTrigger value="a">알림</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function TabsPreview() {
   return (
@@ -130,6 +167,11 @@ export const tabsEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '탭 하나가 가질 수 있는 상태입니다. 선택된 탭만 바탕이 채워지고, 호버하면 글자가 진해집니다.',
+      Demo: States,
+    },
     {
       title: '설정 화면 나누기',
       description: '계정과 비밀번호처럼 성격이 다른 폼을 한 자리에서 탭으로 바꿔 보여줍니다.',

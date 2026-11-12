@@ -1,9 +1,66 @@
 import { useState } from 'react'
 import { BellIcon, CheckIcon, XIcon } from 'lucide-react'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '기본', node: <Badge>New</Badge> },
+        { label: '보조', node: <Badge variant="secondary">Beta</Badge> },
+        { label: '외곽선', node: <Badge variant="outline">Draft</Badge> },
+        { label: '위험', node: <Badge variant="destructive">Error</Badge> },
+        {
+          label: '아이콘',
+          node: (
+            <Badge variant="secondary">
+              <CheckIcon data-icon="inline-start" />
+              완료
+            </Badge>
+          ),
+        },
+        {
+          label: '숫자',
+          node: <Badge className="h-5 min-w-5 justify-center rounded-full px-1 tabular-nums">12</Badge>,
+        },
+        {
+          label: '상태 점',
+          node: (
+            <Badge variant="outline" className="gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              온라인
+            </Badge>
+          ),
+        },
+        {
+          label: '링크 호버',
+          node: (
+            <Badge asChild variant="secondary">
+              <a href="#" data-demo-state="hover">
+                #디자인
+              </a>
+            </Badge>
+          ),
+        },
+        {
+          label: '포커스',
+          node: (
+            <Badge asChild variant="outline">
+              <a href="#" data-demo-state="focus">
+                #리액트
+              </a>
+            </Badge>
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function BadgePreview() {
   return (
@@ -140,6 +197,11 @@ export const badgeEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '배지는 대부분 보여주기만 하지만, 링크로 쓰면 호버와 포커스 상태가 생깁니다.',
+      Demo: States,
+    },
     {
       title: '변형 (variant)',
       description: '강조 정도와 의미에 따라 색과 테두리를 바꿉니다.',

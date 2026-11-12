@@ -17,6 +17,6 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setup.ts',
     // Vitest blanks CSS by default; the design-style scope test needs the real text.
-    css: { include: [/src\/design-styles\/styles\/.+\.css/] },
+    css: { include: [/src\/design-styles\/styles\/.+\.css/, /src\/index\.css/] },
   },
 })

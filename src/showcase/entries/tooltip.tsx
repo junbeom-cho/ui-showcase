@@ -1,7 +1,54 @@
+import type { ReactNode } from 'react'
 import { BoldIcon, CopyIcon, ItalicIcon, Share2Icon, TrashIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+const layout = {
+  top: { box: 'flex-col', arrow: '-bottom-1 left-1/2 -translate-x-1/2' },
+  bottom: { box: 'flex-col-reverse', arrow: '-top-1 left-1/2 -translate-x-1/2' },
+  left: { box: 'flex-row', arrow: '-right-1 top-1/2 -translate-y-1/2' },
+  right: { box: 'flex-row-reverse', arrow: '-left-1 top-1/2 -translate-y-1/2' },
+} as const
+
+/** Static drawing of a shown tooltip next to its trigger. */
+function Drawn({ side, children }: { side: keyof typeof layout; children: ReactNode }) {
+  return (
+    <div className={cn('flex items-center gap-2', layout[side].box)}>
+      <span className="relative max-w-36 rounded-md bg-foreground px-2.5 py-1 text-center text-xs text-background">
+        {children}
+        <span className={cn('absolute size-2 rotate-45 rounded-[1px] bg-foreground', layout[side].arrow)} />
+      </span>
+      <Button size="icon" variant="outline" aria-label="복사" tabIndex={-1}>
+        <CopyIcon />
+      </Button>
+    </div>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '위', node: <Drawn side="top">복사</Drawn> },
+        { label: '아래', node: <Drawn side="bottom">복사</Drawn> },
+        { label: '왼쪽', node: <Drawn side="left">복사</Drawn> },
+        { label: '오른쪽', node: <Drawn side="right">복사</Drawn> },
+        {
+          label: '단축키 포함',
+          node: (
+            <Drawn side="top">
+              복사 <span className="opacity-60">Ctrl+C</span>
+            </Drawn>
+          ),
+        },
+        { label: '여러 줄', node: <Drawn side="top">링크를 복사해 다른 사람에게 보낼 수 있습니다</Drawn> },
+      ]}
+    />
+  )
+}
 
 function TooltipPreview() {
   return (
@@ -129,6 +176,11 @@ export const tooltipEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '말풍선이 뜨는 방향과 내용에 따른 모양을 페이지 안에 그대로 그렸습니다. 실제 툴팁은 아래 예시에서 마우스를 올려 보세요.',
+      Demo: States,
+    },
     {
       title: '아이콘 버튼 설명',
       description: '글자 없는 아이콘 버튼에 이름과 단축키를 알려주는 가장 흔한 쓰임입니다.',

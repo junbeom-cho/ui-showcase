@@ -3,7 +3,77 @@ import { UploadIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function Bar({ value, label, tone, caption }: { value: number; label: string; tone?: string; caption: string }) {
+  return (
+    <div className="flex w-full flex-col gap-1.5 text-xs">
+      <Progress value={value} aria-label={label} className={tone} />
+      <span className="text-muted-foreground">{caption}</span>
+    </div>
+  )
+}
+
+function States() {
+  return (
+    <StateGrid
+      wide
+      items={[
+        { label: '시작 전', node: <Bar value={0} label="시작 전" caption="0%" /> },
+        { label: '진행 중', node: <Bar value={45} label="진행 중 45%" caption="45%" /> },
+        {
+          label: '완료',
+          node: (
+            <Bar
+              value={100}
+              label="완료"
+              tone="[&_[data-slot=progress-indicator]]:bg-emerald-500"
+              caption="100%, 올리기를 마쳤습니다"
+            />
+          ),
+        },
+        {
+          label: '진행률 모름 (불확정)',
+          node: (
+            <div className="flex w-full flex-col gap-1.5 text-xs">
+              <div
+                role="progressbar"
+                aria-label="불러오는 중"
+                className="relative h-1 w-full overflow-hidden rounded-full bg-muted"
+              >
+                <div className="absolute inset-y-0 w-2/5 rounded-full bg-primary motion-safe:animate-indeterminate" />
+              </div>
+              <span className="text-muted-foreground">불러오는 중</span>
+            </div>
+          ),
+        },
+        {
+          label: '오류',
+          node: (
+            <Bar
+              value={62}
+              label="오류"
+              tone="[&_[data-slot=progress-indicator]]:bg-destructive"
+              caption="62%에서 멈춤, 다시 시도하세요"
+            />
+          ),
+        },
+        {
+          label: '일시정지',
+          node: (
+            <Bar
+              value={30}
+              label="일시정지"
+              tone="[&_[data-slot=progress-indicator]]:bg-muted-foreground/50"
+              caption="30%, 일시정지됨"
+            />
+          ),
+        },
+      ]}
+    />
+  )
+}
 
 function ProgressPreview() {
   return <Progress value={60} className="w-full max-w-56" aria-label="진행률 60%" />
@@ -119,6 +189,11 @@ export const progressEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '시작 전부터 완료까지, 그리고 얼마나 남았는지 모를 때와 실패했을 때의 모습입니다.',
+      Demo: States,
+    },
     {
       title: '업로드 진행',
       description: '시간이 걸리는 작업이 지금 어디까지 왔는지 실시간으로 보여줍니다. 버튼을 눌러 보세요.',

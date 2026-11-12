@@ -3,7 +3,24 @@ import { MoonIcon, SunIcon } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
+import { StateGrid } from '../state-grid'
 import type { ShowcaseEntry } from '../types'
+
+function States() {
+  return (
+    <StateGrid
+      items={[
+        { label: '꺼짐', node: <Switch aria-label="꺼짐" /> },
+        { label: '켜짐', node: <Switch aria-label="켜짐" defaultChecked /> },
+        { label: '포커스', node: <Switch aria-label="포커스" data-demo-state="focus" defaultChecked /> },
+        { label: '비활성 (꺼짐)', node: <Switch aria-label="비활성 꺼짐" disabled /> },
+        { label: '비활성 (켜짐)', node: <Switch aria-label="비활성 켜짐" disabled defaultChecked /> },
+        { label: '오류', node: <Switch aria-label="오류" aria-invalid /> },
+        { label: '작게 (sm)', node: <Switch aria-label="작게" size="sm" defaultChecked /> },
+      ]}
+    />
+  )
+}
 
 function SwitchPreview() {
   return (
@@ -105,6 +122,11 @@ export const switchEntry: ShowcaseEntry = {
     ],
   },
   examples: [
+    {
+      title: '상태 모음',
+      description: '켜짐·꺼짐과 포커스, 비활성, 오류, 작은 크기를 나란히 놓았습니다.',
+      Demo: States,
+    },
     {
       title: '설정 목록',
       description: '앱 설정 화면처럼 설명과 스위치를 한 줄씩 나란히 둡니다.',
