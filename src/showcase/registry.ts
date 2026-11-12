@@ -6,6 +6,7 @@ import { breadcrumbEntry } from './entries/breadcrumb'
 import { buttonEntry } from './entries/button'
 import { cardEntry } from './entries/card'
 import { checkboxEntry } from './entries/checkbox'
+import { datePickerEntry } from './entries/date-picker'
 import { dialogEntry } from './entries/dialog'
 import { dropdownMenuEntry } from './entries/dropdown-menu'
 import { gridEntry } from './entries/grid'
@@ -29,6 +30,7 @@ export const entries: ShowcaseEntry[] = [
   buttonEntry,
   cardEntry,
   checkboxEntry,
+  datePickerEntry,
   dialogEntry,
   dropdownMenuEntry,
   gridEntry,

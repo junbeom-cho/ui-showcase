@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { categories } from './categories'
 import { filterEntries } from './filter-entries'
 import { entries } from './registry'
@@ -6,8 +6,8 @@ import { entries } from './registry'
 const ids = () => entries.map((e) => e.id)
 const byId = (id: string) => entries.find((e) => e.id === id)!
 
-it('has all 20 components with unique kebab-case ids and non-empty text', () => {
-  expect(entries).toHaveLength(20)
+it('has all 21 components with unique kebab-case ids and non-empty text', () => {
+  expect(entries).toHaveLength(21)
   expect(new Set(ids()).size).toBe(entries.length)
   for (const e of entries) {
     expect(e.id).toMatch(/^[a-z]+(-[a-z]+)*$/)
@@ -44,6 +44,55 @@ it.each(entries.map((e) => [e.id, e] as const))(
     }
   },
 )
+
+it.each(entries.map((e) => [e.id, e] as const))('%s opens its examples with a labelled state gallery', (_id, e) => {
+  expect(e.examples[0].title).toBe('상태 모음')
+  const States = e.examples[0].Demo
+  render(<States />)
+  const list = screen.getByRole('list', { name: '상태 모음' })
+  expect(within(list).getAllByRole('listitem').length).toBeGreaterThanOrEqual(4)
+})
+
+it('shows every button state, pinning the pointer and keyboard ones', () => {
+  const States = byId('button').examples[0].Demo
+  render(<States />)
+  const items = within(screen.getByRole('list', { name: '상태 모음' })).getAllByRole('listitem')
+  expect(items.map((li) => li.lastElementChild?.textContent)).toEqual([
+    '기본', '호버', '눌림', '포커스', '비활성', '로딩', '성공', '오류', '선택됨',
+  ])
+  const button = (label: string) =>
+    items.find((li) => li.lastElementChild?.textContent === label)!.querySelector('button')!
+  expect(button('호버')).toHaveAttribute('data-demo-state', 'hover')
+  expect(button('눌림')).toHaveAttribute('data-demo-state', 'hover active')
+  expect(button('포커스')).toHaveAttribute('data-demo-state', 'focus')
+  expect(button('비활성')).toBeDisabled()
+  expect(button('로딩')).toBeDisabled()
+  expect(button('선택됨')).toHaveAttribute('aria-pressed', 'true')
+})
+
+it('shows the date picker in every format, after its day states', () => {
+  const datePicker = byId('date-picker')
+  expect(datePicker.category).toBe('input')
+  expect(datePicker.examples.map((x) => x.title)).toEqual([
+    '상태 모음',
+    '캘린더',
+    '휠 피커',
+    '기간 선택',
+    '빠른 선택 칩',
+    '시간 슬롯',
+    '월 선택',
+    '날짜 입력',
+    '체크인·체크아웃',
+    '반복 설정',
+  ])
+})
+
+it.each([
+  ['Calendar', 'date-picker'],
+  ['달력', 'date-picker'],
+])('finds the date picker as %s', (query, id) => {
+  expect(filterEntries(entries, query).map((e) => e.id)).toContain(id)
+})
 
 it.each(entries.map((e) => [e.id, e] as const))('%s preview and examples render', (_id, e) => {
   expect(() => render(<e.Preview />)).not.toThrow()
