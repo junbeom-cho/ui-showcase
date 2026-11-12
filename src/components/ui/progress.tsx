@@ -10,6 +10,8 @@ function Progress({
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      // pass value on so Radix sets aria-valuenow and data-state (the generated file dropped it)
+      value={value}
       className={cn(
         "relative flex h-1 w-full items-center overflow-x-hidden rounded-full bg-muted",
         className
