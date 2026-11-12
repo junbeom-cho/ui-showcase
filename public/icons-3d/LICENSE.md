@@ -8,6 +8,14 @@
 | `bell.png` | `assets/Bell/3D/bell_3d.png` |
 | `cloud.png` | `assets/Cloud/3D/cloud_3d.png` |
 | `storage.png` | `assets/Open file folder/3D/open_file_folder_3d.png` |
+| `home.png` | `assets/House/3D/house_3d.png` |
+| `projects.png` | `assets/File folder/3D/file_folder_3d.png` |
+| `team.png` | `assets/Busts in silhouette/3D/busts_in_silhouette_3d.png` |
+| `settings.png` | `assets/Gear/3D/gear_3d.png` |
+| `mail.png` | `assets/Envelope/3D/envelope_3d.png` |
+| `heart.png` | `assets/Red heart/3D/red_heart_3d.png` |
+| `camera.png` | `assets/Camera/3D/camera_3d.png` |
+| `chart.png` | `assets/Bar chart/3D/bar_chart_3d.png` |
 
 출처: https://github.com/microsoft/fluentui-emoji
 
