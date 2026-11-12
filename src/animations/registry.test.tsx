@@ -1,11 +1,20 @@
 import { render } from '@testing-library/react'
 import { ANIMATION_ORDER, animationModules, animations } from './registry'
-import { defaultParams, SPEED } from './types'
+import { defaultParams, groupOf, SPEED } from './types'
 
 const modules = Object.entries(animationModules).map(([path, module]) => [path, module.animation] as const)
 
-it('has all 20 animation styles in the listed order', () => {
+it('has every listed animation in order: 20 graphic styles, then the UI motion group', () => {
   expect(animations.map((a) => a.id)).toEqual([...ANIMATION_ORDER])
+  expect(animations.filter((a) => groupOf(a) === 'graphic')).toHaveLength(20)
+  expect(animations.filter((a) => groupOf(a) === 'motion').map((a) => a.id)).toEqual([
+    'easing-curves',
+    'micro-interactions',
+    'screen-transitions',
+  ])
+  // groups never interleave in the menu
+  const groups = animations.map(groupOf)
+  expect(groups.indexOf('motion')).toBe(groups.lastIndexOf('graphic') + 1)
 })
 
 it.each(modules)('%s is listed and named after its file', (path, a) => {

@@ -70,6 +70,10 @@ describe('AnimationsIndexPage', () => {
     for (const a of testAnimations) {
       expect(screen.getByRole('link', { name: a.name })).toHaveAttribute('href', `#/animation/${a.id}`)
     }
+    expect(screen.getAllByRole('heading', { level: 2 }).filter((h) => !h.querySelector('a')).map((h) => h.textContent)).toEqual([
+      '그래픽 표현',
+      'UI 모션',
+    ])
     const scenes = screen.getAllByTestId('scene')
     expect(scenes).toHaveLength(testAnimations.length)
     for (const s of scenes) expect(s).toHaveAttribute('data-thumb', 'true')

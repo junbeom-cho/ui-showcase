@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { animationHref } from '@/showcase/route'
 import { prefersReducedMotion } from './animation-page'
-import { defaultParams, type AnimationStyle } from './types'
+import { defaultParams, groupAnimations, type AnimationStyle } from './types'
 
 /**
  * Mounts the scene only while the card is on or near the screen. Leaving unmounts it,
@@ -39,11 +39,11 @@ function AnimationCard({ animation }: { animation: AnimationStyle }) {
       <LiveThumbnail animation={animation} />
       <div className="flex items-start justify-between gap-2 border-t border-rule px-4 py-3">
         <div className="flex flex-col gap-0.5">
-          <h2 className="font-semibold text-ink">
+          <h3 className="font-semibold text-ink">
             <a href={animationHref(animation.id)} className="outline-none after:absolute after:inset-0">
               {animation.name}
             </a>
-          </h2>
+          </h3>
           <p className="text-[13px] text-ink-muted">{animation.englishName}</p>
         </div>
         <Badge variant="outline" className="shrink-0 border-rule font-mono text-[11px] font-normal text-ink-muted">
@@ -70,11 +70,19 @@ export function AnimationsIndexPage({ animations }: { animations: AnimationStyle
           </p>
         )}
       </header>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {animations.map((animation) => (
-          <AnimationCard key={animation.id} animation={animation} />
-        ))}
-      </div>
+      {groupAnimations(animations).map((group) => (
+        <section key={group.id} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-semibold tracking-tight text-ink">{group.label}</h2>
+            <p className="text-ink-muted">{group.description}</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {group.items.map((animation) => (
+              <AnimationCard key={animation.id} animation={animation} />
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   )
 }

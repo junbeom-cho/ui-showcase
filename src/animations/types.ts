@@ -25,9 +25,19 @@ export type SceneProps = {
 
 export type Technique = 'Canvas 2D' | 'WebGL' | 'DOM·CSS'
 
+/** graphic: visual styles and effects; motion: how interface parts move (D-024) */
+export type AnimationGroup = 'graphic' | 'motion'
+
+export const ANIMATION_GROUPS: { id: AnimationGroup; label: string; description: string }[] = [
+  { id: 'graphic', label: '그래픽 표현', description: '화면 전체를 채우는 움직이는 그림과 효과' },
+  { id: 'motion', label: 'UI 모션', description: '버튼·화면 같은 인터페이스 부품이 움직이는 방식' },
+]
+
 export type AnimationStyle = {
   /** kebab-case, used in #/animation/<id> */
   id: string
+  /** defaults to 'graphic' */
+  group?: AnimationGroup
   /** Korean: '메타볼' */
   name: string
   /** 'Metaballs' */
@@ -51,5 +61,13 @@ export type AnimationStyle = {
 /** Every animation gets this slider first. 0 stops time without pausing the page. */
 export const SPEED: ParamSpec = { key: 'speed', label: '속도', min: 0, max: 3, step: 0.1, default: 1, unit: '×' }
 
-export const defaultParams = (style: AnimationStyle): Params =>
+export const groupOf = (style: AnimationStyle): AnimationGroup => style.group ?? 'graphic'
+
+/** The groups in menu order, leaving out empty ones. */
+export const groupAnimations = (styles: AnimationStyle[]) =>
+  ANIMATION_GROUPS.map((group) => ({ ...group, items: styles.filter((s) => groupOf(s) === group.id) })).filter(
+    (g) => g.items.length > 0,
+  )
+
+export const defaultParams =(style: AnimationStyle): Params =>
   Object.fromEntries([SPEED, ...style.params].map((p) => [p.key, p.default]))

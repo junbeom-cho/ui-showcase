@@ -48,6 +48,7 @@ export const testAnimations: AnimationStyle[] = [
   {
     ...base,
     id: 'test-type',
+    group: 'motion',
     name: '글자 춤',
     englishName: 'Test Type',
     aliases: ['Letters'],

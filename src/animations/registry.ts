@@ -1,6 +1,6 @@
 import type { AnimationStyle } from './types'
 
-/** Menu order: the order the user listed them in. */
+/** Menu order: the graphic styles in the order the user listed them, then the UI motion group. */
 export const ANIMATION_ORDER = [
   'liquid-morph',
   'ascii-art',
@@ -22,6 +22,10 @@ export const ANIMATION_ORDER = [
   'flow-fields',
   'metaballs',
   'raymarched-fractals',
+  // UI motion (D-024)
+  'easing-curves',
+  'micro-interactions',
+  'screen-transitions',
 ] as const
 
 /** Every file in ./styles exports `animation`; the file name is its id. */

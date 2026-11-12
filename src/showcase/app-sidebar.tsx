@@ -11,7 +11,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { filterAnimations } from '@/animations/filter-animations'
-import type { AnimationStyle } from '@/animations/types'
+import { groupAnimations, type AnimationStyle } from '@/animations/types'
 import { filterStyles } from '@/design-styles/filter-styles'
 import type { DesignStyle } from '@/design-styles/types'
 import { cn } from '@/lib/utils'
@@ -173,19 +173,24 @@ export function AnimationNav({ animations, route, onNavigate }: {
             전체 보기
           </NavLink>
         )}
-        <ul className="mt-2 border-l border-rule">
-          {matching.map((animation) => (
-            <li key={animation.id} className="-ml-px">
-              <NavLink
-                href={animationHref(animation.id)}
-                current={route.page === 'animation' && route.id === animation.id}
-                onNavigate={onNavigate}
-              >
-                {animation.name}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {groupAnimations(matching).map((group) => (
+          <section key={group.id} className="mt-4 flex flex-col gap-1">
+            <h2 className="pl-3 text-[13px] font-semibold text-ink">{group.label}</h2>
+            <ul className="border-l border-rule">
+              {group.items.map((animation) => (
+                <li key={animation.id} className="-ml-px">
+                  <NavLink
+                    href={animationHref(animation.id)}
+                    current={route.page === 'animation' && route.id === animation.id}
+                    onNavigate={onNavigate}
+                  >
+                    {animation.name}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
         {matching.length === 0 && (
           <p className="px-3 text-sm text-ink-muted">'{query}'와 일치하는 애니메이션이 없습니다.</p>
         )}

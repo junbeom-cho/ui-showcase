@@ -57,6 +57,14 @@ describe('AnimationNav', () => {
     expect(within(nav()).getByRole('link', { name: '점 무리' })).toHaveAttribute('aria-current', 'page')
   })
 
+  it('splits the list into graphic styles and UI motion', () => {
+    render(<AnimationNav animations={testAnimations} route={{ page: 'animations' }} />)
+    expect(within(nav()).getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
+      '그래픽 표현',
+      'UI 모션',
+    ])
+  })
+
   it('searches by Korean, English or other names', async () => {
     render(<AnimationNav animations={testAnimations} route={{ page: 'animations' }} />)
     await user.type(search(), 'dots')
