@@ -1,0 +1,165 @@
+/* Material Design (M3): surfaces with elevation, ripple on press, pill buttons, one tonal palette. */
+
+[data-design-style="material"][data-slot="demo-backdrop"] {
+  background: #f3edf7;
+}
+
+[data-design-style="material"] [data-slot="card"] {
+  background: #fffbfe;
+  color: #1d1b20;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.3),
+    0 4px 8px 3px rgb(0 0 0 / 0.15);
+  transition: box-shadow 0.2s;
+}
+
+[data-design-style="material"] [data-slot="card"]:hover {
+  box-shadow:
+    0 2px 3px rgb(0 0 0 / 0.3),
+    0 6px 10px 4px rgb(0 0 0 / 0.15);
+}
+
+[data-design-style="material"] [data-slot="demo-name"] {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+[data-design-style="material"] [data-slot^="demo-icon"] {
+  color: #49454f;
+}
+
+[data-design-style="material"] [data-slot="avatar-fallback"] {
+  background: #eaddff;
+  color: #21005d;
+}
+
+[data-design-style="material"] [data-slot="badge"] {
+  background: #e8def8;
+  color: #1d192b;
+  border-radius: 8px;
+}
+
+/* filled text field */
+[data-design-style="material"] [data-slot="input"] {
+  height: 40px;
+  background: #e7e0ec;
+  color: #1d1b20;
+  border: none;
+  border-bottom: 1px solid #49454f;
+  border-radius: 4px 4px 0 0;
+  box-shadow: none;
+}
+
+[data-design-style="material"] [data-slot="input"]::placeholder {
+  color: #49454f;
+}
+
+[data-design-style="material"] [data-slot="input"]:focus {
+  border-bottom: 2px solid #6750a4;
+}
+
+/* pill buttons with a ripple. The gradient is a transparent dot inside the button colour.
+   At rest the dot is blown up past the edges, so only background-color shows. On press
+   the colour lightens and the dot snaps to a speck; on release the dot grows back out
+   while the colour fades to normal, so a light circle spreads from the centre and fades. */
+[data-design-style="material"] [data-slot="button"] {
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  box-shadow: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 15000%;
+  transition: background 0.8s;
+}
+
+[data-design-style="material"] [data-slot="button"][data-variant="default"] {
+  background-color: #6750a4;
+  background-image: radial-gradient(circle, transparent 1%, #6750a4 1%);
+  color: #ffffff;
+}
+
+[data-design-style="material"] [data-slot="button"][data-variant="outline"] {
+  background-color: #e8def8;
+  background-image: radial-gradient(circle, transparent 1%, #e8def8 1%);
+  color: #1d192b;
+}
+
+[data-design-style="material"] [data-slot="button"][data-variant="default"]:active {
+  background-color: #9a86d0;
+}
+
+[data-design-style="material"] [data-slot="button"][data-variant="outline"]:active {
+  background-color: #cbbde6;
+}
+
+[data-design-style="material"] [data-slot="button"]:active {
+  background-size: 100%;
+  transition: background 0s;
+}
+
+/* M3 switch: big track, small thumb that grows when on */
+[data-design-style="material"] [data-slot="switch"] {
+  width: 52px;
+  height: 32px;
+  border: 2px solid #79747e;
+  box-shadow: none;
+}
+
+[data-design-style="material"] [data-slot="switch"][data-state="unchecked"] {
+  background: #e6e0e9;
+}
+
+[data-design-style="material"] [data-slot="switch"][data-state="checked"] {
+  background: #6750a4;
+  border-color: #6750a4;
+}
+
+[data-design-style="material"] [data-slot="switch-thumb"] {
+  transition:
+    translate 0.2s,
+    width 0.2s,
+    height 0.2s;
+}
+
+[data-design-style="material"] [data-slot="switch-thumb"][data-state="unchecked"] {
+  width: 16px;
+  height: 16px;
+  background: #79747e;
+  translate: 6px 0;
+}
+
+[data-design-style="material"] [data-slot="switch-thumb"][data-state="checked"] {
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  translate: 20px 0;
+}
+
+[data-design-style="material"] [data-slot="progress"] {
+  height: 4px;
+  background: #e7e0ec;
+  border-radius: 2px;
+}
+
+[data-design-style="material"] [data-slot="progress-indicator"] {
+  background: #6750a4;
+}
+
+[data-design-style="material"] [data-slot="button"]:focus-visible,
+[data-design-style="material"] [data-slot="input"]:focus-visible,
+[data-design-style="material"] [data-slot="switch"]:focus-visible {
+  outline: 2px solid #6750a4;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-design-style="material"] [data-slot="button"],
+  [data-design-style="material"] [data-slot="card"],
+  [data-design-style="material"] [data-slot="switch-thumb"] {
+    transition: none;
+  }
+}

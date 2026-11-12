@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -98,19 +99,35 @@ function Chip({ n, className, style }: { n: number; className?: string; style?: 
   )
 }
 
+type AnatomyProps = {
+  Specimen: ComponentType
+  parts: AnatomyPart[]
+  layout?: 'side' | 'stacked'
+  /**
+   * 'always': every marker shows until the switch turns them off (component pages).
+   * 'on-focus': markers start hidden; hovering or focusing a list item shows only
+   * that part, and the switch shows them all (design-style pages).
+   */
+  markers?: 'always' | 'on-focus'
+  /** 'code' shows part names in the mono code face; 'text' for plain phrases. */
+  nameStyle?: 'code' | 'text'
+  labels?: { toggle: string; list: string }
+}
+
 export function Anatomy({
   Specimen: SpecimenComponent,
   parts,
   layout = 'side',
-}: {
-  Specimen: ComponentType
-  parts: AnatomyPart[]
-  layout?: 'side' | 'stacked'
-}) {
-  const [showMarkers, setShowMarkers] = useState(true)
+  markers = 'always',
+  nameStyle = 'code',
+  labels = { toggle: '부분 번호 표시', list: '부분 이름' },
+}: AnatomyProps) {
+  const [showAll, setShowAll] = useState(markers === 'always')
   const [active, setActive] = useState<number | null>(null)
   const { stageRef, specimenRef, callouts } = useCallouts(parts)
-  const switchId = `anatomy-toggle-${parts[0]?.slot ?? 'none'}-${layout}`
+  const switchId = useId()
+
+  const isVisible = (i: number) => showAll || (markers === 'on-focus' && active === i)
 
   return (
     <div className={cn('grid gap-5', layout === 'side' && 'lg:grid-cols-[minmax(0,1fr)_15rem]')}>
@@ -119,46 +136,44 @@ export function Anatomy({
           <div ref={specimenRef} className="flex w-full justify-center">
             <SpecimenComponent />
           </div>
-          {showMarkers && (
-            <div aria-hidden className="pointer-events-none absolute inset-0">
-              {callouts.map((c, i) => {
-                if (!c) return null
-                const state = active === null ? 'idle' : active === i ? 'active' : 'dimmed'
-                const right = c.left + c.width
-                const leaderLeft = c.side === 'left' ? c.chipX + CHIP_RADIUS : right
-                const leaderWidth =
-                  c.side === 'left' ? c.left - leaderLeft : c.chipX - CHIP_RADIUS - right
-                return (
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            {callouts.map((c, i) => {
+              if (!c || !isVisible(i)) return null
+              const state = active === null ? 'idle' : active === i ? 'active' : 'dimmed'
+              const right = c.left + c.width
+              const leaderLeft = c.side === 'left' ? c.chipX + CHIP_RADIUS : right
+              const leaderWidth =
+                c.side === 'left' ? c.left - leaderLeft : c.chipX - CHIP_RADIUS - right
+              return (
+                <div
+                  key={parts[i].slot}
+                  data-testid="anatomy-marker"
+                  data-state={state}
+                  className={cn(
+                    'absolute inset-0 motion-safe:transition-opacity',
+                    state === 'dimmed' && 'opacity-15',
+                  )}
+                >
                   <div
-                    key={parts[i].slot}
-                    data-testid="anatomy-marker"
-                    data-state={state}
                     className={cn(
-                      'absolute inset-0 motion-safe:transition-opacity',
-                      state === 'dimmed' && 'opacity-15',
+                      'absolute rounded-[3px] border border-dashed border-blueprint/45',
+                      state === 'active' && 'border-solid border-blueprint bg-blueprint/10',
                     )}
-                  >
-                    <div
-                      className={cn(
-                        'absolute rounded-[3px] border border-dashed border-blueprint/45',
-                        state === 'active' && 'border-solid border-blueprint bg-blueprint/10',
-                      )}
-                      style={{ top: c.top, left: c.left, width: c.width, height: c.height }}
-                    />
-                    <div
-                      className="absolute border-t border-blueprint/70"
-                      style={{ top: c.chipY, left: leaderLeft, width: Math.max(0, leaderWidth) }}
-                    />
-                    <Chip
-                      n={i + 1}
-                      className="absolute ring-2 ring-white"
-                      style={{ top: c.chipY - CHIP_RADIUS, left: c.chipX - CHIP_RADIUS }}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          )}
+                    style={{ top: c.top, left: c.left, width: c.width, height: c.height }}
+                  />
+                  <div
+                    className="absolute border-t border-blueprint/70"
+                    style={{ top: c.chipY, left: leaderLeft, width: Math.max(0, leaderWidth) }}
+                  />
+                  <Chip
+                    n={i + 1}
+                    className="absolute ring-2 ring-white"
+                    style={{ top: c.chipY - CHIP_RADIUS, left: c.chipX - CHIP_RADIUS }}
+                  />
+                </div>
+              )
+            })}
+          </div>
         </div>
       </Specimen>
 
@@ -166,16 +181,16 @@ export function Anatomy({
         <div className="flex items-center gap-2">
           <Switch
             id={switchId}
-            checked={showMarkers}
-            onCheckedChange={setShowMarkers}
-            aria-label="부분 번호 표시"
+            checked={showAll}
+            onCheckedChange={setShowAll}
+            aria-label={labels.toggle}
           />
           <Label htmlFor={switchId} className="text-ink-muted">
-            부분 번호 표시
+            {labels.toggle}
           </Label>
         </div>
         <ol
-          aria-label="부분 이름"
+          aria-label={labels.list}
           className={cn('grid', layout === 'stacked' && 'gap-x-4 sm:grid-cols-2')}
         >
           {parts.map((part, i) => (
@@ -192,7 +207,11 @@ export function Anatomy({
               )}
             >
               <Chip n={i + 1} className="row-span-2 mt-px" />
-              <code className="font-mono text-[13px] font-medium text-ink">{part.name}</code>
+              {nameStyle === 'code' ? (
+                <code className="font-mono text-[13px] font-medium text-ink">{part.name}</code>
+              ) : (
+                <span className="text-[14px] font-medium leading-snug text-ink">{part.name}</span>
+              )}
               <span className="text-[13px] leading-snug text-ink-muted">{part.description}</span>
             </li>
           ))}

@@ -26,6 +26,21 @@ it('shows a component page for #/<id> and follows hash changes', () => {
   expect(screen.getByRole('heading', { level: 1, name: 'Tooltip' })).toBeInTheDocument()
 })
 
+it('opens the style index and a style page from the hash', () => {
+  render(<App />)
+  go('#/styles')
+  expect(screen.getByRole('heading', { level: 1, name: '디자인 스타일' })).toBeInTheDocument()
+  go('#/style/flat')
+  expect(screen.getByRole('heading', { level: 1, name: '플랫 디자인' })).toBeInTheDocument()
+})
+
+it('explains an unknown style id', () => {
+  window.location.hash = '#/style/vaporwave'
+  render(<App />)
+  expect(screen.getByText("'vaporwave' 스타일을 찾을 수 없습니다.")).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: '디자인 스타일로 돌아가기' })).toHaveAttribute('href', '#/styles')
+})
+
 it('explains an unknown component id and links back to the overview', () => {
   window.location.hash = '#/carousel'
   render(<App />)

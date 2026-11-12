@@ -10,15 +10,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { filterStyles } from '@/design-styles/filter-styles'
+import type { DesignStyle } from '@/design-styles/types'
 import { cn } from '@/lib/utils'
 import { groupByCategory } from './categories'
 import { filterEntries } from './filter-entries'
-import { hrefFor } from './route'
+import { hrefFor, styleHref, type Route } from './route'
 import type { ShowcaseEntry } from './types'
 
 type NavProps = {
   entries: ShowcaseEntry[]
-  currentId: string | null
+  styles: DesignStyle[]
+  route: Route
   onNavigate?: () => void
 }
 
@@ -48,33 +51,40 @@ function NavLink({
   )
 }
 
-export function NavList({ entries, currentId, onNavigate }: NavProps) {
+function GroupHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="pl-3 text-[13px] font-semibold text-ink">{children}</h2>
+}
+
+export function NavList({ entries, styles, route, onNavigate }: NavProps) {
   const [query, setQuery] = useState('')
+  const searching = query.trim() !== ''
   const groups = groupByCategory(filterEntries(entries, query))
+  const matchingStyles = filterStyles(styles, query)
+  const showStyles = styles.length > 0 && (!searching || matchingStyles.length > 0)
 
   return (
     <div className="flex flex-col gap-5">
       <Input
         type="search"
-        aria-label="컴포넌트 검색"
-        placeholder="이름, 다른 이름으로 찾기"
+        aria-label="검색"
+        placeholder="컴포넌트·스타일 찾기"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         className="bg-white"
       />
-      <nav aria-label="컴포넌트 목록" className="flex flex-col gap-5">
-        <NavLink href={hrefFor(null)} current={currentId === null} onNavigate={onNavigate}>
+      <nav aria-label="탐색 목록" className="flex flex-col gap-5">
+        <NavLink href={hrefFor(null)} current={route.page === 'overview'} onNavigate={onNavigate}>
           개요
         </NavLink>
-        {groups.map(({ category, entries: items }) => (
+        {groups.map(({ category, entries: list }) => (
           <section key={category.id} className="flex flex-col gap-1">
-            <h2 className="pl-3 text-[13px] font-semibold text-ink">{category.label}</h2>
+            <GroupHeading>{category.label}</GroupHeading>
             <ul className="border-l border-rule">
-              {items.map((entry) => (
+              {list.map((entry) => (
                 <li key={entry.id} className="-ml-px">
                   <NavLink
                     href={hrefFor(entry.id)}
-                    current={currentId === entry.id}
+                    current={route.page === 'component' && route.id === entry.id}
                     onNavigate={onNavigate}
                   >
                     {entry.name}
@@ -84,8 +94,33 @@ export function NavList({ entries, currentId, onNavigate }: NavProps) {
             </ul>
           </section>
         ))}
-        {groups.length === 0 && (
-          <p className="px-3 text-sm text-ink-muted">'{query}'와 일치하는 컴포넌트가 없습니다.</p>
+        {showStyles && (
+          <section className="flex flex-col gap-1 border-t border-rule pt-5">
+            <GroupHeading>디자인 스타일</GroupHeading>
+            <ul className="border-l border-rule">
+              {!searching && (
+                <li className="-ml-px">
+                  <NavLink href={styleHref(null)} current={route.page === 'styles'} onNavigate={onNavigate}>
+                    전체 보기
+                  </NavLink>
+                </li>
+              )}
+              {matchingStyles.map((style) => (
+                <li key={style.id} className="-ml-px">
+                  <NavLink
+                    href={styleHref(style.id)}
+                    current={route.page === 'style' && route.id === style.id}
+                    onNavigate={onNavigate}
+                  >
+                    {style.name}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {groups.length === 0 && !showStyles && (
+          <p className="px-3 text-sm text-ink-muted">'{query}'와 일치하는 항목이 없습니다.</p>
         )}
       </nav>
     </div>
@@ -94,7 +129,10 @@ export function NavList({ entries, currentId, onNavigate }: NavProps) {
 
 function Brand() {
   return (
-    <a href={hrefFor(null)} className="text-[17px] font-semibold tracking-tight text-ink outline-none focus-visible:ring-2 focus-visible:ring-blueprint/40">
+    <a
+      href={hrefFor(null)}
+      className="text-[17px] font-semibold tracking-tight text-ink outline-none focus-visible:ring-2 focus-visible:ring-blueprint/40"
+    >
       UI 쇼케이스
     </a>
   )
@@ -111,7 +149,7 @@ export function AppSidebar(props: NavProps) {
 }
 
 /** Top bar with the same list in a Sheet on narrow screens. */
-export function MobileNav({ entries, currentId }: Omit<NavProps, 'onNavigate'>) {
+export function MobileNav(props: Omit<NavProps, 'onNavigate'>) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -119,16 +157,16 @@ export function MobileNav({ entries, currentId }: Omit<NavProps, 'onNavigate'>) 
       <Brand />
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" aria-label="컴포넌트 목록 열기">
+          <Button variant="outline" size="icon" aria-label="탐색 목록 열기">
             <MenuIcon />
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-72 overflow-y-auto bg-paper p-5">
           <SheetHeader className="p-0">
-            <SheetTitle>컴포넌트 목록</SheetTitle>
-            <SheetDescription className="sr-only">종류별 컴포넌트 목록과 검색</SheetDescription>
+            <SheetTitle>탐색 목록</SheetTitle>
+            <SheetDescription className="sr-only">컴포넌트와 디자인 스타일 목록, 검색</SheetDescription>
           </SheetHeader>
-          <NavList entries={entries} currentId={currentId} onNavigate={() => setOpen(false)} />
+          <NavList {...props} onNavigate={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
     </header>

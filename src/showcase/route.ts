@@ -1,15 +1,30 @@
 import { useEffect, useState } from 'react'
 
-export type Route = { page: 'overview' } | { page: 'component'; id: string }
+export type Route =
+  | { page: 'overview' }
+  | { page: 'component'; id: string }
+  | { page: 'styles' }
+  | { page: 'style'; id: string }
 
-/** `#/badge` → component page, anything else (``, `#`, `#/`, `#top`) → overview. */
+/**
+ * `#/styles` → design-style index, `#/style/<id>` → style page,
+ * `#/<id>` → component page, anything else (``, `#`, `#/`, `#top`) → overview.
+ */
 export function parseRoute(hash: string): Route {
-  const match = /^#\/([a-z0-9-]+)\/?$/.exec(hash.trim())
-  return match ? { page: 'component', id: match[1] } : { page: 'overview' }
+  const h = hash.trim()
+  if (/^#\/styles\/?$/.test(h)) return { page: 'styles' }
+  const style = /^#\/style\/([a-z0-9-]+)\/?$/.exec(h)
+  if (style) return { page: 'style', id: style[1] }
+  const component = /^#\/([a-z0-9-]+)\/?$/.exec(h)
+  return component ? { page: 'component', id: component[1] } : { page: 'overview' }
 }
 
 export function hrefFor(id: string | null): string {
   return id ? `#/${id}` : '#/'
+}
+
+export function styleHref(id: string | null): string {
+  return id ? `#/style/${id}` : '#/styles'
 }
 
 export function useRoute(): Route {

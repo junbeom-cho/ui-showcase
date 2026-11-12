@@ -1,0 +1,129 @@
+/* Neumorphism: everything is the background colour; a light shadow top-left and a dark one
+   bottom-right make shapes rise, inset pairs make them sink. Text stays readable. */
+
+[data-design-style="neumorphism"][data-slot="demo-backdrop"] {
+  background: #e0e5ec;
+}
+
+[data-design-style="neumorphism"] [data-slot="card"] {
+  background: #e0e5ec;
+  color: #44506a;
+  border-radius: 24px;
+  box-shadow:
+    -9px -9px 16px #ffffff,
+    9px 9px 16px #a3b1c6;
+}
+
+[data-design-style="neumorphism"] [data-slot^="demo-icon"] {
+  color: #7b869c;
+}
+
+[data-design-style="neumorphism"] [data-slot="avatar"] {
+  box-shadow:
+    -4px -4px 8px #ffffff,
+    4px 4px 8px #a3b1c6;
+}
+
+[data-design-style="neumorphism"] [data-slot="avatar-fallback"] {
+  background: #e0e5ec;
+  color: #44506a;
+}
+
+/* low contrast is part of the look */
+[data-design-style="neumorphism"] [data-slot="badge"] {
+  background: #e0e5ec;
+  color: #7b869c;
+  border-radius: 999px;
+  box-shadow:
+    -2px -2px 4px #ffffff,
+    2px 2px 4px #a3b1c6;
+}
+
+[data-design-style="neumorphism"] [data-slot="input"] {
+  height: 38px;
+  background: #e0e5ec;
+  color: #44506a;
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    inset 4px 4px 8px #a3b1c6,
+    inset -4px -4px 8px #ffffff;
+}
+
+[data-design-style="neumorphism"] [data-slot="input"]::placeholder {
+  color: #8a94a8;
+}
+
+[data-design-style="neumorphism"] [data-slot="button"] {
+  height: 40px;
+  background: #e0e5ec;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow:
+    -5px -5px 10px #ffffff,
+    5px 5px 10px #a3b1c6;
+}
+
+[data-design-style="neumorphism"] [data-slot="button"][data-variant="default"] {
+  color: #4d6fe3;
+}
+
+[data-design-style="neumorphism"] [data-slot="button"][data-variant="outline"] {
+  color: #44506a;
+}
+
+[data-design-style="neumorphism"] [data-slot="button"]:active {
+  box-shadow:
+    inset 4px 4px 8px #a3b1c6,
+    inset -4px -4px 8px #ffffff;
+}
+
+[data-design-style="neumorphism"] [data-slot="switch"] {
+  width: 44px;
+  height: 24px;
+  background: #e0e5ec;
+  border: none;
+  box-shadow:
+    inset 3px 3px 6px #a3b1c6,
+    inset -3px -3px 6px #ffffff;
+}
+
+[data-design-style="neumorphism"] [data-slot="switch-thumb"] {
+  width: 18px;
+  height: 18px;
+  background: #e0e5ec;
+  box-shadow:
+    -2px -2px 4px #ffffff,
+    2px 2px 4px #a3b1c6;
+}
+
+[data-design-style="neumorphism"] [data-slot="switch-thumb"][data-state="unchecked"] {
+  translate: 3px 0;
+}
+
+[data-design-style="neumorphism"] [data-slot="switch-thumb"][data-state="checked"] {
+  background: #6d8cf0;
+  translate: 23px 0;
+}
+
+[data-design-style="neumorphism"] [data-slot="progress"] {
+  height: 10px;
+  background: #e0e5ec;
+  border-radius: 5px;
+  box-shadow:
+    inset 2px 2px 4px #a3b1c6,
+    inset -2px -2px 4px #ffffff;
+}
+
+[data-design-style="neumorphism"] [data-slot="progress-indicator"] {
+  background: #6d8cf0;
+  border-radius: 5px;
+}
+
+[data-design-style="neumorphism"] [data-slot="button"]:focus-visible,
+[data-design-style="neumorphism"] [data-slot="input"]:focus-visible,
+[data-design-style="neumorphism"] [data-slot="switch"]:focus-visible {
+  outline: 2px solid #6d8cf0;
+  outline-offset: 3px;
+}

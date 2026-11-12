@@ -1,4 +1,3 @@
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Anatomy } from './anatomy'
 import { categories, groupByCategory } from './categories'
+import { NeighbourLinks } from './neighbour-links'
 import { hrefFor } from './route'
 import { Specimen } from './specimen'
 import type { ShowcaseEntry } from './types'
@@ -17,35 +17,8 @@ import type { ShowcaseEntry } from './types'
 function Pager({ entry, entries }: { entry: ShowcaseEntry; entries: ShowcaseEntry[] }) {
   const ordered = groupByCategory(entries).flatMap((g) => g.entries)
   const index = ordered.findIndex((e) => e.id === entry.id)
-  const prev = ordered[index - 1]
-  const next = ordered[index + 1]
-  const linkClass =
-    'flex flex-col gap-1 rounded-md border border-rule bg-white px-4 py-3 outline-none hover:border-blueprint focus-visible:ring-2 focus-visible:ring-blueprint/40'
-
-  return (
-    <nav aria-label="이전·다음 컴포넌트" className="grid grid-cols-2 gap-3 border-t border-rule pt-8">
-      {prev ? (
-        <a href={hrefFor(prev.id)} className={linkClass}>
-          <span className="flex items-center gap-1 text-xs text-ink-muted">
-            <ChevronLeftIcon className="size-3.5" />
-            이전
-          </span>
-          <span className="font-medium text-ink">{prev.name}</span>
-        </a>
-      ) : (
-        <span />
-      )}
-      {next && (
-        <a href={hrefFor(next.id)} className={`${linkClass} items-end text-right`}>
-          <span className="flex items-center gap-1 text-xs text-ink-muted">
-            다음
-            <ChevronRightIcon className="size-3.5" />
-          </span>
-          <span className="font-medium text-ink">{next.name}</span>
-        </a>
-      )}
-    </nav>
-  )
+  const link = (e?: ShowcaseEntry) => (e ? { href: hrefFor(e.id), name: e.name } : undefined)
+  return <NeighbourLinks label="이전·다음 컴포넌트" prev={link(ordered[index - 1])} next={link(ordered[index + 1])} />
 }
 
 export function ComponentPage({ entry, entries }: { entry: ShowcaseEntry; entries: ShowcaseEntry[] }) {

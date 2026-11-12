@@ -1,12 +1,15 @@
 import type { ShowcaseEntry } from './types'
 
-export function filterEntries(entries: ShowcaseEntry[], query: string): ShowcaseEntry[] {
+/** True when the trimmed, case-folded query is part of any field. An empty query matches everything. */
+export function matchesQuery(fields: string[], query: string): boolean {
   const needle = query.trim().toLowerCase()
-  if (needle === '') return entries
+  if (needle === '') return true
+  return fields.some((text) => text.toLowerCase().includes(needle))
+}
 
+export function filterEntries(entries: ShowcaseEntry[], query: string): ShowcaseEntry[] {
+  if (query.trim() === '') return entries
   return entries.filter((entry) =>
-    [entry.name, ...entry.aliases, entry.description].some((text) =>
-      text.toLowerCase().includes(needle),
-    ),
+    matchesQuery([entry.name, ...entry.aliases, entry.description], query),
   )
 }

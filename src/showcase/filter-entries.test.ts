@@ -1,4 +1,10 @@
-import { filterEntries } from './filter-entries'
+import { filterEntries, matchesQuery } from './filter-entries'
+
+it('matchesQuery trims, ignores case and checks every field', () => {
+  expect(matchesQuery(['뉴모피즘', 'Neumorphism', 'Soft UI'], '  soft ui ')).toBe(true)
+  expect(matchesQuery(['플랫 디자인'], '')).toBe(true)
+  expect(matchesQuery(['플랫 디자인'], 'glass')).toBe(false)
+})
 import { items } from './test-entries'
 
 it('returns all entries in order for an empty or blank query', () => {

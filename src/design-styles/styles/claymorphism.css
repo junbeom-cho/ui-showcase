@@ -1,0 +1,160 @@
+/* Claymorphism: chubby pastel shapes in colours different from the background, huge radii,
+   an outer soft shadow plus a light inner top-left and a dark inner bottom-right. */
+
+[data-design-style="claymorphism"][data-slot="demo-backdrop"] {
+  background: linear-gradient(160deg, #fde2f3, #dbeafe);
+}
+
+[data-design-style="claymorphism"] [data-slot="card"] {
+  background: #f3e8ff;
+  color: #3b2a4a;
+  border-radius: 32px;
+  box-shadow:
+    14px 18px 30px rgb(150 110 200 / 0.35),
+    inset -6px -8px 14px rgb(150 100 200 / 0.22),
+    inset 6px 8px 14px rgb(255 255 255 / 0.95);
+}
+
+[data-design-style="claymorphism"] [data-slot="demo-name"] {
+  font-weight: 700;
+}
+
+[data-design-style="claymorphism"] [data-slot^="demo-icon"] {
+  color: #8b6bb0;
+}
+
+[data-design-style="claymorphism"] [data-slot="avatar"] {
+  box-shadow: 6px 9px 16px rgb(120 90 180 / 0.4);
+}
+
+[data-design-style="claymorphism"] [data-slot="avatar-fallback"] {
+  background: #c7f0d8;
+  color: #1f5135;
+  box-shadow:
+    inset -3px -4px 6px rgb(40 120 80 / 0.25),
+    inset 3px 4px 6px rgb(255 255 255 / 0.8);
+}
+
+[data-design-style="claymorphism"] [data-slot="badge"] {
+  background: #ffe58f;
+  color: #5a4500;
+  border-radius: 999px;
+  padding-inline: 10px;
+  box-shadow:
+    3px 4px 8px rgb(200 160 40 / 0.35),
+    inset -2px -3px 5px rgb(180 140 20 / 0.3),
+    inset 2px 3px 5px rgb(255 255 255 / 0.8);
+}
+
+[data-design-style="claymorphism"] [data-slot="input"] {
+  height: 40px;
+  background: #ffffff;
+  color: #3b2a4a;
+  border: none;
+  border-radius: 18px;
+  box-shadow:
+    inset 3px 4px 8px rgb(150 110 200 / 0.22),
+    inset -2px -2px 6px #ffffff;
+}
+
+[data-design-style="claymorphism"] [data-slot="input"]::placeholder {
+  color: #9b87b3;
+}
+
+[data-design-style="claymorphism"] [data-slot="button"] {
+  height: 42px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+[data-design-style="claymorphism"] [data-slot="button"][data-variant="default"] {
+  background: #8ec5ff;
+  color: #0d2b4f;
+  box-shadow:
+    6px 8px 14px rgb(70 130 220 / 0.35),
+    inset -3px -4px 8px rgb(40 100 180 / 0.3),
+    inset 3px 4px 8px rgb(255 255 255 / 0.7);
+}
+
+[data-design-style="claymorphism"] [data-slot="button"][data-variant="outline"] {
+  background: #ffd6a5;
+  color: #5b3510;
+  box-shadow:
+    6px 8px 14px rgb(220 150 80 / 0.35),
+    inset -3px -4px 8px rgb(200 120 40 / 0.3),
+    inset 3px 4px 8px rgb(255 255 255 / 0.7);
+}
+
+[data-design-style="claymorphism"] [data-slot="button"]:active {
+  transform: scale(0.96);
+}
+
+[data-design-style="claymorphism"] [data-slot="switch"] {
+  width: 46px;
+  height: 26px;
+  border: none;
+  box-shadow:
+    inset 2px 3px 6px rgb(120 90 160 / 0.3),
+    inset -2px -2px 4px rgb(255 255 255 / 0.8);
+}
+
+[data-design-style="claymorphism"] [data-slot="switch"][data-state="unchecked"] {
+  background: #e7d9f3;
+}
+
+[data-design-style="claymorphism"] [data-slot="switch"][data-state="checked"] {
+  background: #9ee2b8;
+}
+
+[data-design-style="claymorphism"] [data-slot="switch-thumb"] {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  box-shadow:
+    2px 3px 5px rgb(100 80 140 / 0.35),
+    inset -2px -2px 4px rgb(150 120 190 / 0.25);
+}
+
+[data-design-style="claymorphism"] [data-slot="switch-thumb"][data-state="unchecked"] {
+  translate: 3px 0;
+}
+
+[data-design-style="claymorphism"] [data-slot="switch-thumb"][data-state="checked"] {
+  translate: 23px 0;
+}
+
+[data-design-style="claymorphism"] [data-slot="progress"] {
+  height: 12px;
+  background: #ead9f5;
+  border-radius: 999px;
+  box-shadow: inset 2px 2px 4px rgb(120 90 160 / 0.25);
+}
+
+[data-design-style="claymorphism"] [data-slot="progress-indicator"] {
+  background: #ffb3c7;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 2px 3px rgb(255 255 255 / 0.7),
+    inset 0 -2px 3px rgb(200 80 120 / 0.3);
+}
+
+[data-design-style="claymorphism"] [data-slot="button"]:focus-visible,
+[data-design-style="claymorphism"] [data-slot="input"]:focus-visible,
+[data-design-style="claymorphism"] [data-slot="switch"]:focus-visible {
+  outline: 3px solid #8b6bb0;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-design-style="claymorphism"] [data-slot="button"] {
+    transition: none;
+  }
+
+  [data-design-style="claymorphism"] [data-slot="button"]:active {
+    transform: none;
+  }
+}
