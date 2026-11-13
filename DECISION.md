@@ -23,6 +23,24 @@
 
 ---
 
+## D-028: UI 모션 7개 추가
+
+- 날짜: 2026-11-13
+- 상태: 채택
+- 배경: UI 모션 묶음(D-024)에 실무에서 자주 쓰는 움직임이 더 필요함
+- 결정: 스크롤 연동(패럴랙스·나타나기·고정 섹션), 글자 효과(타자기·스크램블·마키), SVG 선 그리기, 컨페티, 드래그와 스와이프(순서 바꾸기·밀어서 삭제), 스프링 물리(강성·감쇠·질량), 커서 효과(따라오는 커서·자석 버튼·스포트라이트)를 UI 모션 묶음에 추가한다. 아무도 만지지 않으면 저절로 시연한다
+- 대안: 애니메이션 라이브러리(Motion 등) 사용 — 원리를 보여주는 쇼케이스라 엔진 위에 직접 만든다(D-021과 같음)
+- 영향: UI 모션이 10개, 애니메이션이 30개가 된다
+
+## D-027: 컴포넌트 14개 추가
+
+- 날짜: 2026-11-13
+- 상태: 채택
+- 배경: 자주 쓰는데 아직 없는 컴포넌트와 형식별 페이지가 남아 있음
+- 결정: Combobox, Popover, Hover Card, Context Menu, Toggle Group, Stepper, File Upload, Tag Input, Rating, Drawer와 Charts(막대·선·영역·도넛·스파크라인·지표 카드·히트맵), 형식별 페이지 Navigation Patterns, Search Patterns, Empty States를 추가한다
+- 대안: 차트에 recharts(shadcn chart) 사용 — 무겁고 원리가 가려져 SVG로 직접 그린다
+- 영향: 컴포넌트가 43개가 된다. shadcn hover-card, context-menu, command(+input-group), drawer를 추가하고 cmdk, vaul이 의존성에 들어간다. Stepper, File Upload, Tag Input, Rating은 shadcn에 없어 기존 부품으로 만든다
+
 ## D-026: 디자인 스타일 6개 추가
 
 - 날짜: 2026-11-13
