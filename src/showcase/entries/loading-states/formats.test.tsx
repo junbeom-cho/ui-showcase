@@ -7,9 +7,11 @@ import {
   ButtonLoadingFormat,
   OptimisticFormat,
   ProgressFormat,
+  ProgressRingFormat,
   ShimmerFormat,
   SkeletonFormat,
   SpinnerFormat,
+  TopLoadingBarFormat,
   UploadFormat,
 } from './formats'
 
@@ -44,7 +46,7 @@ describe('entry', () => {
   it('is a feedback entry that search finds by every format name', () => {
     expect(loadingStatesEntry.category).toBe('feedback')
     expect(loadingStatesEntry.description).toMatch(/\.$/)
-    for (const query of ['Spinner', 'Loader', 'Progress bar', 'Skeleton screen', 'Shimmer', 'Optimistic UI', 'Lazy loading', '스피너', '로딩']) {
+    for (const query of ['Spinner', 'Loader', 'Progress bar', 'Skeleton screen', 'Shimmer', 'Optimistic UI', 'Lazy loading', 'Progress ring', 'Circular progress', 'Top loading bar', 'NProgress', '스피너', '로딩', '원형 진행', '상단 로딩 바']) {
       expect(filterEntries([loadingStatesEntry], query), query).toHaveLength(1)
     }
   })
@@ -60,6 +62,8 @@ describe('entry', () => {
       '여러 파일 업로드',
       '낙관적 업데이트',
       '흐릿하게 먼저 보이기',
+      '원형 진행',
+      '상단 로딩 바',
     ])
   })
 
@@ -238,4 +242,66 @@ it('blur-up: starts from a blurred preview and sharpens when the original arrive
 
   await u.click(screen.getByRole('button', { name: '다시 불러오기' }))
   expect(picture).toHaveAttribute('data-loaded', 'false')
+})
+
+it('progress ring: fills toward a goal, and spins without a value until it knows how long', async () => {
+  const u = timedUser()
+  render(<ProgressRingFormat />)
+  const goal = screen.getByRole('progressbar', { name: '이번 달 저축 목표' })
+  expect(goal).toHaveAttribute('aria-valuenow', '4')
+  expect(goal).toHaveAttribute('aria-valuemax', '5')
+  expect(goal).toHaveAttribute('aria-valuetext', '5회 중 4회')
+  expect(goal).toHaveTextContent('80%')
+
+  await u.click(screen.getByRole('button', { name: '저축하기' }))
+  expect(goal).toHaveTextContent('100%')
+  expect(screen.getByRole('button', { name: '저축하기' })).toBeDisabled()
+  expect(status()).toHaveTextContent('이번 달 목표를 채웠습니다.')
+
+  const backup = screen.getByRole('progressbar', { name: '사진 백업' })
+  await u.click(screen.getByRole('button', { name: '백업 시작' }))
+  expect(backup).not.toHaveAttribute('aria-valuenow')
+  expect(backup).toHaveTextContent('준비 중')
+  expect(status()).toHaveTextContent('얼마나 걸릴지 아직 모릅니다')
+
+  later(1200 + 500)
+  expect(backup).toHaveAttribute('aria-valuenow', '25')
+  later(1500)
+  expect(backup).toHaveAttribute('aria-valuenow', '100')
+  expect(status()).toHaveTextContent('사진 백업을 마쳤습니다.')
+  expect(screen.getByRole('button', { name: '다시 백업' })).toBeEnabled()
+})
+
+it('top loading bar: creeps toward 90%, completes to 100% when the page lands, then fades away', async () => {
+  const u = timedUser()
+  render(<TopLoadingBarFormat />)
+  const bar = () => screen.queryByRole('progressbar', { name: '페이지 불러오는 중' })
+  expect(bar()).toBeNull()
+
+  await u.click(screen.getByRole('button', { name: /고객센터/ }))
+  expect(status()).toHaveTextContent('고객센터 페이지를 여는 중…')
+  later(3000)
+  const creeping = Number(bar()!.getAttribute('aria-valuenow'))
+  expect(creeping).toBeGreaterThan(80)
+  expect(creeping).toBeLessThan(90)
+  expect(screen.getByRole('heading', { name: '홈' })).toBeInTheDocument()
+
+  later(1000)
+  expect(bar()).toHaveAttribute('aria-valuenow', '100')
+  expect(bar()).toHaveAttribute('data-state', 'complete')
+  expect(screen.getByRole('heading', { name: '고객센터' })).toBeInTheDocument()
+  expect(status()).toHaveTextContent('고객센터 페이지를 열었습니다.')
+  later(700)
+  expect(bar()).toBeNull()
+
+  await u.click(screen.getByRole('button', { name: /상품/ }))
+  later(600)
+  expect(screen.getByRole('heading', { name: '상품' })).toBeInTheDocument()
+  later(700)
+
+  await u.click(screen.getByRole('button', { name: /이벤트/ }))
+  later(1500)
+  expect(bar()).toHaveAttribute('data-state', 'failed')
+  expect(screen.getByRole('alert')).toHaveTextContent('이벤트 페이지를 열지 못했습니다')
+  expect(screen.getByRole('heading', { name: '상품' })).toBeInTheDocument()
 })

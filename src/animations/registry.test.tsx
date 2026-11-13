@@ -10,6 +10,7 @@ it('has every listed animation in order: 20 graphic styles, then the UI motion g
   expect(animations.filter((a) => groupOf(a) === 'motion').map((a) => a.id)).toEqual([
     'easing-curves',
     'micro-interactions',
+    'stagger',
     'screen-transitions',
     'scroll-effects',
     'text-effects',

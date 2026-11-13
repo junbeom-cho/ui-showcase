@@ -6,8 +6,8 @@ import { entries } from './registry'
 const ids = () => entries.map((e) => e.id)
 const byId = (id: string) => entries.find((e) => e.id === id)!
 
-it('has all 43 components with unique kebab-case ids and non-empty text', () => {
-  expect(entries).toHaveLength(43)
+it('has all 49 components with unique kebab-case ids and non-empty text', () => {
+  expect(entries).toHaveLength(49)
   expect(new Set(ids()).size).toBe(entries.length)
   for (const e of entries) {
     expect(e.id).toMatch(/^[a-z]+(-[a-z]+)*$/)

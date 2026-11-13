@@ -7,6 +7,8 @@ export const categories: Category[] = [
   { id: 'display', label: '정보 표시', description: '사람·상태·내용을 짧게 보여주는 요소' },
   { id: 'feedback', label: '피드백', description: '진행 상황과 알릴 내용을 전하는 요소' },
   { id: 'overlay', label: '오버레이', description: '페이지 위에 겹쳐 떠오르는 요소' },
+  { id: 'mobile', label: '모바일', description: '휴대폰 앱에서 손가락으로 쓰는 화면과 동작' },
+  { id: 'pattern', label: 'UX 패턴', description: '특정 상황에서 반복해 쓰이는 화면 설계. 따라 할 예와 피할 예' },
 ]
 
 export function groupByCategory(entries: ShowcaseEntry[]) {

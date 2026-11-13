@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
-import { HouseIcon, MenuIcon, SearchIcon, UserIcon } from 'lucide-react'
+import { MenuIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StateGrid } from '../../state-grid'
 import type { ShowcaseEntry } from '../../types'
 import {
-  BottomTabFormat,
   HamburgerFormat,
   MegaMenuFormat,
   OverflowMenuFormat,
   SideRailFormat,
+  StickyHeaderFormat,
   TabNavFormat,
   TopNavFormat,
 } from './formats'
@@ -83,12 +83,15 @@ function NavigationPreview() {
           <span className="h-1.5 w-1/2 rounded bg-muted" />
         </div>
       </div>
-      <div className="flex h-20 w-12 flex-col overflow-hidden rounded-lg border-2 border-foreground/80 bg-background">
-        <div className="flex-1" />
-        <div className="flex justify-around border-t py-1">
-          <HouseIcon className="size-2.5" />
-          <SearchIcon className="size-2.5 text-muted-foreground" />
-          <UserIcon className="size-2.5 text-muted-foreground" />
+      {/* a narrow window with its ☰ panel slid out */}
+      <div className="relative flex h-20 w-16 flex-col overflow-hidden rounded-md border bg-background">
+        <div className="flex h-5 items-center justify-end border-b px-1.5">
+          <MenuIcon className="size-2.5" />
+        </div>
+        <div className="absolute inset-y-0 left-0 flex w-10 flex-col gap-1.5 border-r bg-muted p-1.5 pt-2 shadow-sm">
+          <span className="h-1.5 w-full rounded-full bg-foreground/70" />
+          <span className="h-1.5 w-5/6 rounded-full bg-muted-foreground/30" />
+          <span className="h-1.5 w-4/6 rounded-full bg-muted-foreground/30" />
         </div>
       </div>
     </div>
@@ -102,24 +105,23 @@ export const navigationPatternsEntry: ShowcaseEntry = {
     'Navbar',
     'Top navigation',
     'Hamburger menu',
-    'Bottom navigation',
-    'Tab bar',
     'Navigation rail',
     'Mega menu',
     'Tab navigation',
     'Overflow menu',
     'Priority+ navigation',
+    'Sticky header',
     '내비게이션',
     '내비게이션 바',
     '상단 내비게이션',
     '햄버거 메뉴',
-    '하단 탭 바',
     '사이드 레일',
     '메가 메뉴',
     '탭 내비게이션',
     '더보기 메뉴',
+    '고정 헤더',
   ],
-  description: '지금 어느 화면에 있는지 알려 주고 다른 화면으로 옮겨 가게 하는 메뉴를 상단 바·햄버거·하단 탭·레일 같은 방식으로 보여 주는 형식.',
+  description: '지금 어느 화면에 있는지 알려 주고 다른 화면으로 옮겨 가게 하는 메뉴를 상단 바·햄버거·사이드 레일·고정 헤더 같은 방식으로 보여 주는 형식.',
   category: 'navigation',
   Preview: NavigationPreview,
   anatomy: {
@@ -154,12 +156,6 @@ export const navigationPatternsEntry: ShowcaseEntry = {
       Demo: HamburgerFormat,
     },
     {
-      title: '하단 탭 바',
-      description:
-        '휴대폰 화면 아래에 가장 중요한 목적지 3~5개를 아이콘과 이름으로 늘 띄워 둡니다. 엄지가 닿는 자리라 앱에서 가장 흔하고, 다섯 개를 넘거나 그때그때 하는 동작(공유, 삭제)을 넣는 곳은 아닙니다. 탭을 바꿔 화면이 바뀌는지 보고, 홈에서 상품을 담아 장바구니 숫자가 오르는지 보세요.',
-      Demo: BottomTabFormat,
-    },
-    {
       title: '사이드 레일',
       description:
         '화면 왼쪽에 아이콘만 세로로 늘어놓은 좁은 띠입니다. 메일·캘린더처럼 넓은 화면에서 본문을 넓게 쓰는 데스크톱 앱에 쓰고, 휴대폰처럼 좁은 화면에서는 하단 탭 바가 낫습니다. 아이콘만으로 뜻이 안 통할 수 있으니 이름을 펼칠 수 있어야 합니다. 접힌 상태에서 아이콘에 마우스를 올려 이름을 보고, 맨 위 버튼으로 펼쳐 보세요.',
@@ -182,6 +178,12 @@ export const navigationPatternsEntry: ShowcaseEntry = {
       description:
         '한 줄에 다 들어가지 않는 메뉴를 뒤에서부터 "더보기" 안으로 옮깁니다(Priority+ 내비게이션). 섹션이 많은 뉴스·쇼핑 사이트에 쓰고, 중요한 메뉴를 앞에 둬야 끝까지 보입니다. 메뉴가 몇 개뿐이면 접지 말고 다 보여 주는 편이 낫습니다. 폭을 줄여 메뉴가 하나씩 들어가는 것을 보고, 더보기 안의 항목을 골라 현재 표시가 더보기에 붙는지 보세요.',
       Demo: OverflowMenuFormat,
+    },
+    {
+      title: '고정 헤더',
+      description:
+        '페이지를 내려도 머리글과 필터 줄이 화면 위에 붙어 있습니다(position: sticky). 목록이 길어 검색·장바구니·필터를 계속 써야 하는 쇼핑·게시판 페이지에 쓰고, 짧은 페이지나 읽기에 집중할 글에서는 화면만 가리니 쓰지 않는 편이 낫습니다. 내려가면 그림자로 내용과 구분하고, 화면이 좁으면 내릴 때 숨겼다가 올릴 때 다시 보여 줍니다. 목록을 내려 그림자가 생기는지 보고, 내리면 숨기기로 바꿔 위아래로 굴려 보세요.',
+      Demo: StickyHeaderFormat,
     },
   ],
 }

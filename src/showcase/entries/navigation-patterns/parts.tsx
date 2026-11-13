@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from 'react'
+import { useRef, useState, type MouseEvent, type ReactNode, type UIEvent } from 'react'
 import { cn } from '@/lib/utils'
 
 /** Name a part for the anatomy drawing only. */
@@ -6,6 +6,23 @@ export const slotProps = (on: boolean, name: string) => (on ? { 'data-slot': nam
 
 /** Demo links point at "#"; keep the showcase's own hash route where it is. */
 export const stay = (event: MouseEvent) => event.preventDefault()
+
+/**
+ * Follows a scrolling box: how far down it is and whether the last real move went down.
+ * Pass the returned handler to the box's onScroll.
+ */
+export function useScrollDirection() {
+  const last = useRef(0)
+  const [scroll, setScroll] = useState({ top: 0, down: false })
+  const onScroll = (event: UIEvent<HTMLElement>) => {
+    const top = event.currentTarget.scrollTop
+    // ignore a few pixels of jitter, but always notice reaching the very top
+    if (Math.abs(top - last.current) < 6 && top > 0) return
+    setScroll({ top, down: top > last.current })
+    last.current = top
+  }
+  return [scroll, onScroll] as const
+}
 
 /** The made-up product every navigation demo belongs to. */
 export function Logo({

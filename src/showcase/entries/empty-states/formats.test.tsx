@@ -3,12 +3,16 @@ import userEvent from '@testing-library/user-event'
 import { filterEntries } from '../../filter-entries'
 import { emptyStatesEntry } from '.'
 import {
+  AfterDeleteFormat,
   AllDoneFormat,
+  FilterNoResultsFormat,
   FirstUseFormat,
+  LockedFormat,
   NoAccessFormat,
   NoMatchFormat,
   NotFoundFormat,
   OfflineFormat,
+  PermissionRequestFormat,
   ServerErrorFormat,
 } from './formats'
 
@@ -36,7 +40,7 @@ describe('entry', () => {
     expect(emptyStatesEntry.id).toBe('empty-states')
     expect(emptyStatesEntry.category).toBe('feedback')
     expect(emptyStatesEntry.description).toMatch(/\.$/)
-    for (const query of ['Empty state', 'Zero state', 'Blank slate', '404', 'Not found', 'Offline', '빈 화면', '첫 사용', '권한 없음', '서버 오류']) {
+    for (const query of ['Empty state', 'Zero state', 'Blank slate', '404', 'Not found', 'Offline', '빈 화면', '첫 사용', '권한 없음', '서버 오류', 'No filter results', 'Permission request', 'After delete', 'Locked state', '필터 결과 없음', '권한 요청', '삭제 직후', '잠김']) {
       expect(filterEntries([emptyStatesEntry], query), query).toHaveLength(1)
     }
   })
@@ -46,11 +50,15 @@ describe('entry', () => {
       '상태 모음',
       '첫 사용',
       '검색 결과 없음',
+      '필터 결과 없음',
       '모두 완료',
+      '삭제 직후',
       '404 페이지 없음',
       '권한 없음',
+      '권한 요청',
       '오프라인',
       '서버 오류',
+      '잠김',
     ])
     for (const x of emptyStatesEntry.examples) expect(x.description).toMatch(/[가-힣].*\.$/)
   })
@@ -252,4 +260,90 @@ it('server error: shows a code to report, fails the first retry, then succeeds',
 
   await u.click(screen.getByRole('button', { name: '예시 처음으로' }))
   expect(status()).toHaveTextContent('불러오기 실패 · 오류 코드 E500-7F3A · 시도 1번')
+})
+
+it('no filter results: names the chips, offers to drop one or reset, and points at the closest match', async () => {
+  const u = user()
+  render(<FilterNoResultsFormat />)
+  expect(screen.getByRole('heading', { name: '조건에 맞는 상품이 없어요' })).toBeInTheDocument()
+  expect(screen.getByText(/고른 조건/)).toHaveTextContent('고른 조건(서울 · 편도 · 조식 포함)')
+  expect(screen.getByText(/가장 가까운 상품/)).toHaveTextContent('서울 시티 호텔 1박 + 항공 (조식 포함 아님)')
+  expect(status()).toHaveTextContent('상품 5개 중 0개 표시 · 필터: 서울, 편도, 조식 포함')
+
+  await u.click(screen.getByRole('button', { name: /‘편도’ 빼기 · 1개/ }))
+  const list = screen.getByRole('list', { name: '상품' })
+  expect(list).toHaveFocus()
+  expect(within(list).getAllByRole('listitem')).toHaveLength(1)
+  expect(screen.getByRole('button', { name: '편도', pressed: false })).toBeInTheDocument()
+
+  await u.click(screen.getByRole('button', { name: '편도' }))
+  await u.click(screen.getByRole('button', { name: '필터 초기화' }))
+  expect(status()).toHaveTextContent('상품 5개 중 5개 표시 · 필터: 없음')
+})
+
+it('permission request: explains, asks, and after a refusal sends people to settings', async () => {
+  const u = user()
+  render(<PermissionRequestFormat />)
+  expect(screen.getByRole('heading', { name: '가격이 내리면 알려드릴게요' })).toBeInTheDocument()
+  expect(status()).toHaveTextContent('알림 권한: 묻기 전')
+
+  await u.click(screen.getByRole('button', { name: '알림 켜기' }))
+  const ask = screen.getByRole('dialog', { name: '알림 권한 요청' })
+  expect(within(ask).getByRole('button', { name: '허용' })).toHaveFocus()
+  await u.click(within(ask).getByRole('button', { name: '허용 안 함' }))
+  expect(screen.getByRole('heading', { name: '알림이 꺼져 있어요' })).toBeInTheDocument()
+  expect(screen.getByText(/설정 › 모아 여행 › 알림/)).toBeInTheDocument()
+  expect(status()).toHaveTextContent('알림 권한: 거부')
+
+  await u.click(screen.getByRole('button', { name: '설정 열기' }))
+  await u.click(screen.getByRole('switch', { name: '알림 허용' }))
+  expect(status()).toHaveTextContent('알림 권한: 허용 · 설정 화면')
+  await u.click(screen.getByRole('button', { name: '앱으로 돌아가기' }))
+  expect(screen.getByText('알림을 켰어요')).toBeInTheDocument()
+
+  await u.click(screen.getByRole('button', { name: '예시 처음으로' }))
+  await u.click(screen.getByRole('button', { name: '알림 켜기' }))
+  await u.click(screen.getByRole('button', { name: '허용' }))
+  expect(status()).toHaveTextContent('알림 권한: 허용')
+})
+
+it('after delete: confirms the emptied bin, offers a short undo, and tells the last-item case apart', async () => {
+  const u = timedUser()
+  render(<AfterDeleteFormat />)
+  await u.click(screen.getByRole('button', { name: '휴지통 비우기' }))
+  expect(screen.getByRole('heading', { name: '휴지통을 비웠어요' })).toHaveFocus()
+  expect(status()).toHaveTextContent('휴지통 파일 0개 · 방금 지움: 여행 영수증.pdf, 오사카 사진.jpg, 초안 v2.docx · 되돌리기 가능')
+
+  await u.click(screen.getByRole('button', { name: '되돌리기' }))
+  expect(within(screen.getByRole('list', { name: '휴지통 파일' })).getAllByRole('listitem')).toHaveLength(3)
+
+  for (const name of ['여행 영수증.pdf', '오사카 사진.jpg', '초안 v2.docx']) {
+    await u.click(screen.getByRole('button', { name: `${name} 영구 삭제` }))
+  }
+  expect(screen.getByRole('heading', { name: '마지막 파일을 지웠어요' })).toBeInTheDocument()
+  later(5000)
+  expect(screen.queryByRole('button', { name: '되돌리기' })).toBeNull()
+  expect(screen.getByText(/30일 동안 보관/)).toBeInTheDocument()
+  expect(status()).toHaveTextContent('되돌리기 끝남')
+
+  await u.click(screen.getByRole('button', { name: '예시 처음으로' }))
+  expect(status()).toHaveTextContent('휴지통 파일 3개')
+})
+
+it('locked: says what opens it and how close you are, and opens once the cart reaches the goal', async () => {
+  const u = user()
+  render(<LockedFormat />)
+  expect(screen.getByRole('heading', { name: '3만 원 이상 담으면 열려요' })).toBeInTheDocument()
+  expect(screen.getByRole('progressbar', { name: '쿠폰까지' })).toHaveAttribute('aria-valuetext', '1/3')
+  expect(status()).toHaveTextContent('담은 금액 10,000원 · 쿠폰 잠김 (1/3)')
+
+  await u.click(screen.getByRole('button', { name: '드립백 커피 10개 담기' }))
+  expect(status()).toHaveTextContent('쿠폰 잠김 (2/3)')
+  await u.click(screen.getByRole('button', { name: '원두 200g 담기' }))
+  expect(screen.getByRole('heading', { name: '쿠폰이 열렸어요' })).toBeInTheDocument()
+  await u.click(screen.getByRole('button', { name: '쿠폰 받기' }))
+  expect(status()).toHaveTextContent('담은 금액 30,000원 · 쿠폰 받음')
+
+  await u.click(screen.getByRole('button', { name: '원두 200g 빼기' }))
+  expect(screen.getByRole('heading', { name: '3만 원 이상 담으면 열려요' })).toBeInTheDocument()
 })

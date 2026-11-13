@@ -4,6 +4,7 @@ import type { ShowcaseEntry } from '../../types'
 import {
   BadgeCountFormat,
   BannerFormat,
+  CoachMarkFormat,
   ConfirmDialogFormat,
   InlineMessageFormat,
   NotificationCenterFormat,
@@ -134,11 +135,16 @@ export const notificationsEntry: ShowcaseEntry = {
     'Notification badge',
     'Notification center',
     'Confirm dialog',
+    'Coach mark',
+    'Onboarding tour',
+    'Product tour',
     '토스트',
     '스낵바',
     '알림',
     '배너',
     '알림 센터',
+    '코치마크',
+    '온보딩 가이드',
   ],
   description: '일이 끝났거나, 잘못됐거나, 확인이 필요할 때 토스트·배너·배지·대화상자 같은 방식으로 사용자에게 알리는 형식.',
   category: 'feedback',
@@ -203,6 +209,12 @@ export const notificationsEntry: ShowcaseEntry = {
       description:
         '되돌릴 수 없는 일을 하기 전에 화면을 막고 한 번 더 묻습니다. 무엇이 지워지는지 이름까지 적고, 버튼에도 "폴더 삭제"처럼 할 일을 씁니다. 자주 하는 일이나 되돌릴 수 있는 일에 쓰면 습관처럼 누르게 되니 그때는 스낵바의 실행 취소가 낫습니다. 취소와 삭제를 각각 눌러 보세요.',
       Demo: ConfirmDialogFormat,
+    },
+    {
+      title: '코치마크',
+      description:
+        '앱을 처음 연 사람에게 화면을 어둡게 덮고 버튼 하나만 구멍처럼 밝혀 "여기서 계좌를 연결해요"라고 짚어 줍니다. 새 기능이나 처음 보는 화면처럼 한 번 알려 주면 되는 곳에 3단계 안팎으로 짧게 쓰고, 언제든 건너뛸 수 있게 합니다. 쓰는 법을 매번 설명해야 한다면 안내보다 화면을 고치는 게 먼저입니다. 다음과 건너뛰기를 눌러 보고, 말풍선 안에서 ←→와 Esc도 써 보세요.',
+      Demo: CoachMarkFormat,
     },
   ],
 }

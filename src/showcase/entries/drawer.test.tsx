@@ -31,10 +31,10 @@ const demo = (title: string) => drawerEntry.examples.find((x) => x.title === tit
 const status = () => screen.getByRole('status', { hidden: true })
 const gone = (name: string) => waitFor(() => expect(screen.queryByRole('dialog', { name })).toBeNull())
 
-it('is an overlay with other names, a Korean sentence and distinct examples', () => {
+it('is a mobile component with other names, a Korean sentence and distinct examples', () => {
   expect(drawerEntry.id).toBe('drawer')
   expect(drawerEntry.name).toBe('Drawer')
-  expect(drawerEntry.category).toBe('overlay')
+  expect(drawerEntry.category).toBe('mobile')
   expect(drawerEntry.aliases).toEqual(expect.arrayContaining(['Bottom sheet', 'Action sheet', '바텀 시트', '드로어']))
   expect(drawerEntry.description).toMatch(/\.$/)
   expect(drawerEntry.examples.map((x) => x.title)).toEqual([

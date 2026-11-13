@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 
-export type CategoryId = 'layout' | 'navigation' | 'input' | 'display' | 'feedback' | 'overlay'
+export type CategoryId = 'layout' | 'navigation' | 'input' | 'display' | 'feedback' | 'overlay' | 'mobile' | 'pattern'
 
 export type Category = {
   id: CategoryId

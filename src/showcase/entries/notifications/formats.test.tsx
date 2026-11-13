@@ -5,6 +5,7 @@ import { notificationsEntry } from '.'
 import {
   BadgeCountFormat,
   BannerFormat,
+  CoachMarkFormat,
   ConfirmDialogFormat,
   InlineMessageFormat,
   NotificationCenterFormat,
@@ -34,7 +35,7 @@ describe('entry', () => {
   it('is a feedback entry that search finds by every format name', () => {
     expect(notificationsEntry.category).toBe('feedback')
     expect(notificationsEntry.description).toMatch(/\.$/)
-    for (const query of ['Toast', 'Snackbar', 'Banner', 'Inline message', 'Notification center', '토스트', '스낵바', '알림']) {
+    for (const query of ['Toast', 'Snackbar', 'Banner', 'Inline message', 'Notification center', 'Coach mark', 'Onboarding tour', 'Product tour', '토스트', '스낵바', '알림', '코치마크', '온보딩 가이드']) {
       expect(filterEntries([notificationsEntry], query), query).toHaveLength(1)
     }
   })
@@ -49,6 +50,7 @@ describe('entry', () => {
       '배지 숫자',
       '알림 센터',
       '확인 대화상자',
+      '코치마크',
     ])
   })
 
@@ -260,4 +262,43 @@ it('confirm dialog: names what goes; cancel keeps it, confirm deletes it', async
   expect(screen.queryByRole('alertdialog')).toBeNull()
   expect(status()).toHaveTextContent('‘제주 여행 사진’ 폴더를 삭제했습니다. 사진 128장도 함께 지웠습니다.')
   expect(screen.queryByText('제주 여행 사진')).toBeNull()
+})
+
+it('coach mark: steps through the tour with buttons and arrow keys, focus in the bubble, Esc skips', async () => {
+  const u = userEvent.setup()
+  render(<CoachMarkFormat />)
+  const bubble = () => screen.queryByRole('dialog')
+  const replay = screen.getByRole('button', { name: '코치마크 다시 보기' })
+  // open when the page loads, but it does not grab focus until used
+  expect(bubble()).toHaveAccessibleName('여기서 계좌를 연결해요')
+  expect(bubble()).toHaveTextContent('1/3')
+  expect(bubble()).not.toHaveFocus()
+  expect(replay).toBeDisabled()
+  expect(document.querySelector('[data-slot="coach-spotlight"]')).not.toBeNull()
+
+  await u.click(within(bubble()!).getByRole('button', { name: '다음' }))
+  expect(bubble()).toHaveAccessibleName('잔액을 한곳에서 봐요')
+  expect(bubble()).toHaveFocus()
+  expect(status()).toHaveTextContent('안내 2/3')
+
+  await u.keyboard('{ArrowRight}')
+  expect(bubble()).toHaveAccessibleName('입출금 알림은 여기에')
+  expect(within(bubble()!).getByRole('button', { name: '시작하기' })).toBeInTheDocument()
+  await u.keyboard('{ArrowLeft}')
+  expect(bubble()).toHaveTextContent('2/3')
+
+  await u.keyboard('{Escape}')
+  expect(bubble()).toBeNull()
+  expect(status()).toHaveTextContent('2/3단계에서 건너뛰었습니다')
+  expect(replay).toHaveFocus()
+
+  await u.click(replay)
+  expect(bubble()).toHaveAccessibleName('여기서 계좌를 연결해요')
+  expect(bubble()).toHaveFocus()
+  for (const name of ['다음', '다음', '시작하기']) await u.click(within(bubble()!).getByRole('button', { name }))
+  expect(bubble()).toBeNull()
+  expect(status()).toHaveTextContent('안내를 모두 봤습니다')
+
+  await u.click(screen.getByRole('button', { name: '계좌 연결' }))
+  expect(status()).toHaveTextContent('계좌 연결을 눌렀습니다')
 })

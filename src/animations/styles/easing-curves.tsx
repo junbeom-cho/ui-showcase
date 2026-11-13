@@ -30,6 +30,16 @@ function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
 /** A damped spring settling at 1; CSS can only fake this with linear() or JS. */
 const spring = (t: number) => 1 - Math.exp(-5 * t) * Math.cos(10 * t)
 
+/** The classic easeOutBounce: four parabolas, each a lower hop, landing at 1 like a dropped ball. */
+function bounce(t: number) {
+  const n = 7.5625
+  const d = 2.75
+  if (t < 1 / d) return n * t * t
+  if (t < 2 / d) return n * (t - 1.5 / d) ** 2 + 0.75
+  if (t < 2.5 / d) return n * (t - 2.25 / d) ** 2 + 0.9375
+  return n * (t - 2.625 / d) ** 2 + 0.984375
+}
+
 type Easing = { name: string; css: string; fn: (t: number) => number; color: string }
 
 const EASINGS: Easing[] = [
@@ -40,6 +50,7 @@ const EASINGS: Easing[] = [
   { name: 'ease-in-out', css: '천천히 출발·도착', fn: cubicBezier(0.42, 0, 0.58, 1), color: '#d97706' },
   { name: 'back', css: '살짝 넘쳤다 돌아옴', fn: cubicBezier(0.34, 1.56, 0.64, 1), color: '#e0457b' },
   { name: 'spring', css: '튕기며 멈춤', fn: spring, color: '#e5484d' },
+  { name: 'bounce', css: '끝에 부딪혀 통통 튐', fn: bounce, color: '#0891b2' },
 ]
 
 const HOLD = 0.9 // seconds the balls rest at the end before starting over
@@ -156,7 +167,7 @@ export const animation: AnimationStyle = {
   group: 'motion',
   name: '이징 곡선',
   englishName: 'Easing Curves',
-  aliases: ['Easing', 'Timing function', 'cubic-bezier', 'Spring', '가속 곡선'],
+  aliases: ['Easing', 'Timing function', 'cubic-bezier', 'Spring', 'Bounce', '가속 곡선', '바운스'],
   description: '같은 거리를 같은 시간에 움직여도 속도를 내는 방식에 따라 느낌이 달라지는 것을 나란히 비교하는 애니메이션',
   context: 'CSS의 transition-timing-function, 디자인 도구의 애니메이션 설정, 모든 버튼·메뉴·화면 전환에서 고르는 값입니다.',
   technique: 'Canvas 2D',
@@ -172,7 +183,7 @@ export const animation: AnimationStyle = {
     },
     {
       title: '잔상 점으로 보는 속도',
-      description: '흐린 점은 같은 시간 간격마다 찍은 위치입니다. 점 사이가 넓으면 빠르고 좁으면 느립니다. back과 spring은 끝을 지나쳤다가 돌아옵니다.',
+      description: '흐린 점은 같은 시간 간격마다 찍은 위치입니다. 점 사이가 넓으면 빠르고 좁으면 느립니다. back과 spring은 끝을 지나쳤다가 돌아오고, bounce는 끝에 부딪혀 몇 번 튀어 오른 뒤 멈춥니다.',
     },
   ],
   params: [

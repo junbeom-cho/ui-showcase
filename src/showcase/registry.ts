@@ -41,9 +41,21 @@ import { tagInputEntry } from './entries/tag-input'
 import { textareaEntry } from './entries/textarea'
 import { toggleGroupEntry } from './entries/toggle-group'
 import { tooltipEntry } from './entries/tooltip'
+import { aiPatternsEntry } from './entries/ai-patterns'
+import { darkPatternsEntry } from './entries/dark-patterns'
+import { gesturesEntry } from './entries/gestures'
+import { menuIconsEntry } from './entries/menu-icons'
+import { mobileNavigationEntry } from './entries/mobile-navigation'
+import { quantityStepperEntry } from './entries/quantity-stepper'
 import type { ShowcaseEntry } from './types'
 
 export const entries: ShowcaseEntry[] = [
+  aiPatternsEntry,
+  darkPatternsEntry,
+  gesturesEntry,
+  menuIconsEntry,
+  mobileNavigationEntry,
+  quantityStepperEntry,
   accordionEntry,
   alertEntry,
   avatarEntry,

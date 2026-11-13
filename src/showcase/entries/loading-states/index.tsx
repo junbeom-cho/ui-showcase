@@ -9,9 +9,11 @@ import {
   ButtonLoadingFormat,
   OptimisticFormat,
   ProgressFormat,
+  ProgressRingFormat,
   ShimmerFormat,
   SkeletonFormat,
   SpinnerFormat,
+  TopLoadingBarFormat,
   UploadFormat,
 } from './formats'
 import { Spinner } from './spinners'
@@ -154,9 +156,15 @@ export const loadingStatesEntry: ShowcaseEntry = {
     'Optimistic UI',
     'Lazy loading',
     'Blur-up',
+    'Progress ring',
+    'Circular progress',
+    'Top loading bar',
+    'NProgress',
     '스피너',
     '로딩',
     '로딩 표시',
+    '원형 진행',
+    '상단 로딩 바',
   ],
   description: '기다리는 동안 무엇이 얼마나 진행되는지를 스피너·진행 막대·스켈레톤 같은 방식으로 보여 주는 형식.',
   category: 'feedback',
@@ -225,6 +233,18 @@ export const loadingStatesEntry: ShowcaseEntry = {
       description:
         '아주 작은 미리보기 그림을 흐리게 늘려 먼저 보여 주고, 원본이 오면 선명하게 바꿉니다. 큰 사진이 많은 화면에서 빈 칸이 오래 비어 있지 않게 할 때 씁니다. 다시 불러오기를 눌러 빈 칸에서 갑자기 나타나는 쪽과 비교해 보세요.',
       Demo: BlurUpFormat,
+    },
+    {
+      title: '원형 진행',
+      description:
+        '막대 대신 원이 위에서부터 시계 방향으로 차오르고, 가운데에 퍼센트나 "5회 중 4회"를 적습니다. 목표 달성률·저장 공간처럼 한눈에 비율을 보여 줄 카드나 좁은 자리에 씁니다. 긴 파일 목록처럼 여러 개를 나란히 비교할 때는 가로 막대가 더 읽기 쉽습니다. 길이를 모를 때는 원의 일부만 빙글 돕니다. 저축하기와 백업 시작을 눌러 보세요.',
+      Demo: ProgressRingFormat,
+    },
+    {
+      title: '상단 로딩 바',
+      description:
+        '다른 페이지로 넘어가는 동안 화면 맨 위에 얇은 막대가 지나갑니다. 실제 진행률을 모르므로 90% 근처까지 천천히 다가가다가, 페이지가 오면 100%로 채우고 사라집니다(NProgress·유튜브 방식). 이전 페이지를 가리지 않아 기다리는 동안에도 읽을 수 있습니다. 한 화면 안의 일부만 불러올 때는 그 자리의 스피너·스켈레톤이 맞습니다. 빠름·느림·실패 메뉴를 각각 눌러 보세요.',
+      Demo: TopLoadingBarFormat,
     },
   ],
 }

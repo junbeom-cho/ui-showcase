@@ -1,3 +1,3 @@
-export { BottomTabFormat, SideRailFormat } from './app-formats'
+export { SideRailFormat } from './app-formats'
 export { HamburgerFormat, MegaMenuFormat, TopNavFormat } from './bar-formats'
-export { OverflowMenuFormat, TabNavFormat, visibleCount } from './page-formats'
+export { OverflowMenuFormat, StickyHeaderFormat, TabNavFormat, visibleCount } from './page-formats'

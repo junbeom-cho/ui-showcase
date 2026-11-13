@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
+import { useId, useRef, useState, type FormEvent } from 'react'
 import {
   CheckCircle2Icon,
   CheckIcon,
@@ -19,21 +19,7 @@ import { Switch } from '@/components/ui/switch'
 import { BrowserFrame, ContentSketch, PhoneFrame } from '../navigation-patterns/frames'
 import { LockArt, NotFoundArt, OfflineArt, ServerArt } from './art'
 import { EmptyState } from './parts'
-
-/** Timers that are all cleared when the demo goes away. */
-function useTimers() {
-  const ids = useRef<number[]>([])
-  useEffect(() => () => ids.current.forEach((t) => window.clearTimeout(t)), [])
-  return {
-    later: (fn: () => void, ms: number) => {
-      ids.current.push(window.setTimeout(fn, ms))
-    },
-    clear: () => {
-      ids.current.forEach((t) => window.clearTimeout(t))
-      ids.current = []
-    },
-  }
-}
+import { useTimers } from './use-timers'
 
 type Page = { kind: 'missing' | 'home' | 'search' | 'event'; url: string; query?: string }
 

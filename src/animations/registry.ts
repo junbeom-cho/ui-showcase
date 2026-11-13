@@ -25,6 +25,7 @@ export const ANIMATION_ORDER = [
   // UI motion (D-024)
   'easing-curves',
   'micro-interactions',
+  'stagger', // added later, kept beside the other timing basics
   'screen-transitions',
   // UI motion, second batch (D-028)
   'scroll-effects',

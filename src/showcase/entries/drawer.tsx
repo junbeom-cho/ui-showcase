@@ -686,7 +686,7 @@ export const drawerEntry: ShowcaseEntry = {
   name: 'Drawer',
   aliases: ['Bottom sheet', 'Action sheet', '바텀 시트', '드로어'],
   description: '휴대폰 화면 아래에서 올라오고, 손잡이를 끌어내려 닫는 패널.',
-  category: 'overlay',
+  category: 'mobile',
   Preview: DrawerPreview,
   anatomy: {
     Specimen: DrawerSpecimen,

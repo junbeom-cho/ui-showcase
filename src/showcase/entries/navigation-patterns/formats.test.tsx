@@ -1,13 +1,13 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { filterEntries } from '../../filter-entries'
 import { navigationPatternsEntry } from '.'
 import {
-  BottomTabFormat,
   HamburgerFormat,
   MegaMenuFormat,
   OverflowMenuFormat,
   SideRailFormat,
+  StickyHeaderFormat,
   TabNavFormat,
   TopNavFormat,
   visibleCount,
@@ -38,15 +38,15 @@ describe('entry', () => {
     for (const query of [
       'Navbar',
       'Hamburger menu',
-      'Bottom navigation',
       'Navigation rail',
       'Mega menu',
       'Overflow menu',
+      'Sticky header',
       '햄버거 메뉴',
-      '하단 탭 바',
       '사이드 레일',
       '메가 메뉴',
       '더보기 메뉴',
+      '고정 헤더',
     ]) {
       expect(filterEntries([navigationPatternsEntry], query), query).toHaveLength(1)
     }
@@ -57,11 +57,11 @@ describe('entry', () => {
       '상태 모음',
       '상단 내비게이션 바',
       '햄버거 메뉴',
-      '하단 탭 바',
       '사이드 레일',
       '메가 메뉴',
       '탭 내비게이션',
       '더보기 메뉴',
+      '고정 헤더',
     ])
     for (const x of navigationPatternsEntry.examples) expect(x.description).toMatch(/[가-힣].*\.$/)
   })
@@ -164,25 +164,6 @@ it('hamburger: focus moves into the panel, stays there, and returns to ☰ when 
   expect(within(screen.getByRole('dialog')).getByRole('link', { name: '주문 내역' })).toHaveAttribute('aria-current', 'page')
 })
 
-it('bottom tab bar: switching tabs changes the screen, and the cart badge counts up', async () => {
-  const u = user()
-  render(<BottomTabFormat />)
-  const tabs = within(screen.getByRole('navigation', { name: '하단 탭' }))
-  expect(tabs.getAllByRole('link')).toHaveLength(5)
-  expect(tabs.getByRole('link', { name: '홈' })).toHaveAttribute('aria-current', 'page')
-
-  await u.click(screen.getByRole('button', { name: '머그컵 담기' }))
-  expect(status()).toHaveTextContent('현재 탭: 홈 · 장바구니 3개 · 머그컵 담음')
-  await u.click(tabs.getByRole('link', { name: '장바구니, 3개 담김' }))
-  expect(tabs.getByRole('link', { name: '장바구니, 3개 담김' })).toHaveAttribute('aria-current', 'page')
-  expect(screen.getByText('담은 상품 3개')).toBeInTheDocument()
-  expect(screen.queryByText('오늘의 추천')).toBeNull()
-
-  await u.click(tabs.getByRole('link', { name: '내 정보' }))
-  expect(screen.getByText('단골 등급')).toBeInTheDocument()
-  expect(status()).toHaveTextContent('현재 탭: 내 정보')
-})
-
 it('side rail: icons only until it is widened, and the current page is marked', async () => {
   const u = user()
   render(<SideRailFormat />)
@@ -281,4 +262,31 @@ it('overflow menu: narrowing the frame moves items into 더보기, where they ca
   await u.click(screen.getByRole('menuitem', { name: '여행' }))
   expect(status()).toHaveTextContent('현재: 여행')
   expect(screen.getByRole('button', { name: '더보기, 현재 페이지 여행 포함' })).toBeInTheDocument()
+})
+
+it('sticky header: stays on top with a shadow once scrolled, and can step aside on the way down', async () => {
+  const u = user()
+  render(<StickyHeaderFormat />)
+  const page = screen.getByTestId('product-page')
+  const bar = screen.getByRole('group', { name: '종류' }).parentElement!
+  const scrollTo = (top: number) => fireEvent.scroll(page, { target: { scrollTop: top } })
+  expect(bar).toHaveClass('sticky', 'top-0', 'border-transparent')
+  expect(status()).toHaveTextContent('헤더: 맨 위 · 그림자 없음 · 전체 12개')
+
+  scrollTo(200)
+  expect(bar).toHaveClass('shadow-md')
+  expect(status()).toHaveTextContent('위에 붙어 있음')
+
+  await u.click(screen.getByRole('radio', { name: '내리면 숨기기' }))
+  scrollTo(400)
+  expect(bar).toHaveClass('-translate-y-full')
+  expect(status()).toHaveTextContent('숨김 (내리는 중, 올리면 다시 나옴)')
+  scrollTo(300)
+  expect(bar).not.toHaveClass('-translate-y-full')
+  scrollTo(0)
+  expect(status()).toHaveTextContent('맨 위 · 그림자 없음')
+
+  await u.click(screen.getByRole('button', { name: '조명' }))
+  expect(screen.getByRole('button', { name: '조명' })).toHaveAttribute('aria-pressed', 'true')
+  expect(status()).toHaveTextContent('조명 4개')
 })

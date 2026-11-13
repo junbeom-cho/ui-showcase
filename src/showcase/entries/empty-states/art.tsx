@@ -151,3 +151,41 @@ export function ServerArt({ className }: ArtProps) {
     </svg>
   )
 }
+
+/** A bell with a price tag: tell me when it gets cheaper. With `muted`, a line through it. */
+export function BellArt({ className, muted = false }: ArtProps & { muted?: boolean }) {
+  return (
+    <svg aria-hidden viewBox="0 0 120 96" fill="none" className={cn(artClass, className)}>
+      <Shadow rx={30} />
+      <path
+        d="M42 64V44a18 18 0 0 1 36 0v20l6 8H36z"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+        className={muted ? 'fill-muted stroke-muted-foreground/60' : 'fill-amber-100 stroke-amber-500 dark:fill-amber-500/20'}
+      />
+      <path d="M54 78a6 6 0 0 0 12 0" strokeWidth="2.5" strokeLinecap="round" className="stroke-muted-foreground/60" />
+      <path d="M60 22v4" strokeWidth="3" strokeLinecap="round" className="stroke-muted-foreground/60" />
+      <path d="M84 20h18l6 7-6 7H84z" strokeWidth="2" strokeLinejoin="round" className="fill-background stroke-emerald-500" />
+      <path d="M90 27h8M95 24l3 3-3 3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="stroke-emerald-600 dark:stroke-emerald-400" />
+      {muted && (
+        <>
+          <path d="M28 18l64 64" strokeWidth="9" strokeLinecap="round" className="stroke-background" />
+          <path d="M28 18l64 64" strokeWidth="3.5" strokeLinecap="round" className="stroke-muted-foreground" />
+        </>
+      )}
+    </svg>
+  )
+}
+
+/** An empty bin with a little sparkle: nothing left in it. */
+export function TrashArt({ className }: ArtProps) {
+  return (
+    <svg aria-hidden viewBox="0 0 120 96" fill="none" className={cn(artClass, className)}>
+      <Shadow rx={30} />
+      <path d="M38 30h44l-4 50a5 5 0 0 1-5 4.5H47a5 5 0 0 1-5-4.5z" strokeWidth="2.5" strokeLinejoin="round" className="fill-slate-100 stroke-slate-500 dark:fill-slate-500/20" />
+      <path d="M32 30h56M52 30v-5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5" strokeWidth="2.5" strokeLinecap="round" className="stroke-slate-500" />
+      <path d="M52 42v32M60 42v32M68 42v32" strokeWidth="2" strokeLinecap="round" className="stroke-slate-300 dark:stroke-slate-500/50" />
+      <path d="M96 22v8M92 26h8M22 40v6M19 43h6" strokeWidth="2" strokeLinecap="round" className="stroke-sky-400" />
+    </svg>
+  )
+}
