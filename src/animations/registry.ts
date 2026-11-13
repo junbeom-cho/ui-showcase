@@ -26,6 +26,14 @@ export const ANIMATION_ORDER = [
   'easing-curves',
   'micro-interactions',
   'screen-transitions',
+  // UI motion, second batch (D-028)
+  'scroll-effects',
+  'text-effects',
+  'svg-line-drawing',
+  'confetti',
+  'drag-gestures',
+  'spring-physics',
+  'cursor-effects',
 ] as const
 
 /** Every file in ./styles exports `animation`; the file name is its id. */

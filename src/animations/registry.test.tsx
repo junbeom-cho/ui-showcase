@@ -11,6 +11,13 @@ it('has every listed animation in order: 20 graphic styles, then the UI motion g
     'easing-curves',
     'micro-interactions',
     'screen-transitions',
+    'scroll-effects',
+    'text-effects',
+    'svg-line-drawing',
+    'confetti',
+    'drag-gestures',
+    'spring-physics',
+    'cursor-effects',
   ])
   // groups never interleave in the menu
   const groups = animations.map(groupOf)
